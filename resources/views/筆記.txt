@@ -1,0 +1,152 @@
+筆記
+@section('script')
+<script>
+    // $(document).ready(() => {
+
+    //     let resourceintable = 0;
+
+    //     $("#search").on("click", () => {
+
+    //         if (resourceintable < 5) {
+
+    //             resourceintable++;
+
+    //             const aresource = $('#resource-getter').val();
+
+    //             function UrlSpilter(resource_url) {
+
+    //                 if (resource_url != '') {
+
+    //                     const resource_url_components = resource_url.split('/');
+    //                     const resource_domain = resource_url_components[2];
+    //                     const resource_location_paramets = resource_url_components.splice(3, resource_url_components.length - 1);
+
+    //                     let resource = {
+    //                         'resource_domain': resource_domain,
+    //                         'location_paramets': resource_location_paramets
+    //                     }
+
+    //                     return resource
+
+    //                 } else {
+    //                     console.log('未輸入東西')
+    //                 }
+    //             }
+
+    //             let resource_url_data = UrlSpilter(aresource);
+
+                
+    //             if (resource_url_data['resource_domain'] === "stackoverflow.com") {
+                    
+    //                 if (resource_url_data['location_paramets'][0] === "questions") {
+                        
+    //                     function Stackapi(resource_url_data) {
+    //                         console.log(this.resource_url_data)
+    //                         const url_properties = resource_url_data
+    //                         console.log(url_properties)
+    //                         let question_title = ""
+    //                         let question_tags = []
+    //                         let question_create_date = ""
+    //                         let answer_accepted = []
+    //                         let answer_accepted_try
+
+    //                         if (url_properties['location_paramets'][0] === 'questions') {
+    //                             console.log('aa')
+
+    //                             let question_id = url_properties['location_paramets'][1];
+
+    //                             $.ajaxSetup({
+    //                                 headers: {
+    //                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //                                 },
+    //                                 async: false,
+    //                                 timeout: 30 * 1000
+    //                             });
+
+    //                             $.getJSON(`https://api.stackexchange.com/2.3/questions/${question_id}?order=desc&sort=activity&site=stackoverflow`,
+
+    //                                 (stackitem) => {
+    //                                     $.each(stackitem['items'], (key, infos) => {
+    //                                         question_title = infos.title
+    //                                         question_create_date = infos.creation_date
+    //                                         question_tags.push(infos.tags)
+    //                                         answer_accepted = infos.accepted_answer_id === undefined ? false : true
+    //                                     })
+    //                                     console.log(answer_accepted_try === undefined)
+    //                                 }
+    //                             );
+
+    //                             let question_part_property = {
+    //                                 'title': question_title,
+    //                                 'tags': question_tags,
+    //                                 'create_date': question_create_date,
+    //                                 'has_bestanswer': answer_accepted
+    //                             }
+    //                             console.log(question_part_property)
+    //                             return question_part_property
+    //                         }
+    //                     }
+
+    //                     let resource_properties = Stackapi(aresource, UrlSpilter);
+
+    //                     function Question_Properties_Getter(resource_url, UrlSpilter, Stackapi) {
+
+    //                         const resource_url_info = UrlSpilter(resource_url)
+    //                         const resource_property_info = Stackapi(resource_url, UrlSpilter)
+
+    //                         console.log([resource_url_info, resource_property_info])
+    //                         question_json_data = {
+    //                             'domain': resource_url_info['resource_domain'],
+    //                             'location': resource_url_info['location_paramets'].join('/'),
+    //                             'title': resource_property_info['title'],
+    //                             'tags': resource_property_info['tags'],
+    //                             'create_date': resource_property_info['create_date'],
+    //                             'has_bestanswer': resource_property_info['has_bestanswer']
+    //                         }
+    //                     }
+
+    //                     let resource_data = Question_Properties_Getter(UrlSpilter, Stackapi);
+
+    //                     $.post({
+    //                         url: "",
+    //                         data: {
+    //                             value: resource_data
+    //                         },
+    //                         success: (data, status) => {
+    //                             alert('value stored');
+    //                         }
+    //                     });
+
+    //                 } else {
+    //                     alert('URL有問題');
+    //                 }
+    //             } else {
+    //                 alert('網域未加入');
+    //             }
+    //         } else {
+    //             alert('資料太多，請先加入現有資源');
+    //         }
+    //     })
+    // })
+</script>
+@endsection
+
+W => 自認問題本質、語言框架環境文件
+E => 問題癥結
+M =>單篇文章
+->['title', 'domain']
+    ->stack ['activedate', 'bestanswer', 'vote', 'creatdate', 'tags']
+    ->ithome['series', 'creatdate', 'tags']
+//I => 最佳解答
+//P => 回答讚數
+Corporate => domain
+S => 語言、框架
+T => 問題時間、回答時間
+Place => 環境
+O => 套件
+    protected $fillable = [
+        'domain',
+        'domain_name',
+        'content_language'
+    ];
+}
