@@ -33,9 +33,7 @@ class ApiRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'contentype' => '',
-        ];
+        return [];
     }
 
     /**

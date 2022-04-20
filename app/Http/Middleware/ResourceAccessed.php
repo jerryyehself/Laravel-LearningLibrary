@@ -18,16 +18,13 @@ class ResourceAccessed
     public function handle(Request $request, Closure $next)
     {
 
-        $resource_status = Http::timeout(5)->get($request->resource)->status();
-        dd($resource_status);
-        switch ($resource_status) {
-            case 200:
-                return $next($request);
-                break;
-            case 404:
-                // dd($resource_status);
-                return response('aa');
-                break;
+        $resource =  Http::get($request->resource);
+
+        $status = $resource->ok();
+        if ($status != true) {
+            $resource = Http::retry(5, 100)->throwIf($status >= 400, 'cant get targert');
+            return  redirect('/', ['error' => $resource]);
         }
+        return $next($request);
     }
 }

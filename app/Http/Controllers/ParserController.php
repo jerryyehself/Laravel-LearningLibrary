@@ -13,27 +13,11 @@ class ParserController extends Controller
      * @param  \App\Http\RequestsApiRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function index(ApiRequest $request)
+    public function index(Request $request)
     {
-        dd($request);
+
         if (isset($request)) {
-
-
-            $resource_url_components = explode('/', $request->resource);
-
-            $resource_location_paramets = array_slice($resource_url_components, 4);
-            $resource_location = implode('/', $resource_location_paramets);
-
-            $url_paramets = [
-                'resource_url' => $request->resource,
-                'resource_domain' => $resource_url_components[2],
-                'resource_location' => $resource_location,
-                'resource_location_paramets' => $resource_location_paramets
-            ];
-
-            return $url_paramets;
-        } else {
-            return 'Resource::all()';
+            return view('home', ['resource' => $request])->with('done', 'done');
         }
     }
 

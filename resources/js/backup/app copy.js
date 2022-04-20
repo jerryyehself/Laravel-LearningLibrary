@@ -1,4 +1,4 @@
-require('./bootstrap');
+require('../bootstrap');
 
 $(document).ready(() => {
 
@@ -134,7 +134,7 @@ $.ajax({
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     },
     contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-    success: (data) => { 
+    success: (data) => {
         console.log(data);
     },
     complete: (data) => {

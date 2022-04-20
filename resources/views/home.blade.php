@@ -3,15 +3,15 @@
 <main class="d-flex flex-column flex-grow-1 align-items-center justify-content-center mb-5 position-relative">
 
     <div id="input" class="d-flex flex-column justify-content-center mt-4">
-        @if(!isset($title))
+        @if(!isset($resource))
         <span id="main-information" class="align-items-center fs-3 px-2">查詢已有文章或加入新資源</span>
         @endif
         <form method="POST" action="" class="input-group fs-3 pt-4 pb-5 mb-3">
             @csrf
-            <input type="url" name="resource" id="resource-getter" class="form-control-md form-control rounded-start" placeholder="http://..." />
-            <input type="submit" id="search" class="form-control-md btn btn-outline-secondary rounded-end " value="查詢" />
-            @isset($title)
-            <input type="button" id="submit" class="form-control-sm btn btn-outline-secondary btn-sm rounded-end" value="加入資源" disabled />
+            <input type="url" name="resource" id="resource" class="form-control-md form-control rounded-start" placeholder="http://..." />
+            <button type="button" id="search" class="form-control-md btn btn-outline-secondary rounded-end ">查詢</button>
+            @isset($resource)
+            <button type="button" id="insert" class="form-control-sm btn btn-outline-secondary btn-sm rounded-end" disabled>加入資源</button>
             @endisset
         </form>
 
@@ -25,7 +25,7 @@
     </div>
 
     <div id="result" class="d-flex flex-column align-items-center px-5 mt-4 w-100">
-        @isset($resourcetitle)
+        @isset($resource)
 
         <table id="resources" class="table">
             <thead>
@@ -44,18 +44,18 @@
                         <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="add-resource" />
                     </td>
                     <td class="col-6 fw-bold text-break fst-italic">
-                        {{$resourcetitle}}
-                        @if($bestanswer === true)
+                        {{$resource->resourcetitle}}
+                        @if($resource->bestanswer === true)
                         <i id="useful" class="bi bi-check-circle-fill ps-2"></i>
                         @endif
                     </td>
                     <td class="col-2 ">
 
-                        <img class="col mw-100" src='{{$domainlogo}}' />
+                        <!-- <img class="col mw-100" src='' /> -->
 
                     </td>
                     <td class="col-3">
-                        @foreach($tags as $tag)
+                        @foreach($resource->tags as $tag)
                         <button type="button" class="d-inline-flex align-items-center btn btn-secondary btn-sm my-1">
                             {{$tag}}
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
