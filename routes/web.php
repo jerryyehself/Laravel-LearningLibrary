@@ -33,7 +33,7 @@ Route::middleware('resource.available', 'resource.content')
 // Route::post('/', [ParserController::class, 'index']);
 
 
-Route::prefix('setting', 'collection')->group(function () {
+Route::prefix('setting')->group(function () {
     Route::resources([
         '' => SourceDomainController::class,
         'sourcesites' => SourceDomainController::class,
