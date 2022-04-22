@@ -35,14 +35,14 @@ Route::middleware('resource.available', 'resource.content')
 
 Route::prefix('setting')->group(function () {
     Route::resources([
-        'setting/' => SourceDomainController::class,
-        'setting/sourcesites' => SourceDomainController::class,
-        'setting/works' => WorksController::class,
-        'setting/languages' => LanguagesController::class,
-        'setting/packagetools' => PackagetoolsController::class,
-        'setting/environments' => EnvironmentsController::class,
-        'setting/frameworks' => FrameworksController::class,
-        'setting/documents' => DocumentController::class
+        '/' => SourceDomainController::class,
+        '/sourcesites' => SourceDomainController::class,
+        '/works' => WorksController::class,
+        '/languages' => LanguagesController::class,
+        '/packagetools' => PackagetoolsController::class,
+        '/environments' => EnvironmentsController::class,
+        '/frameworks' => FrameworksController::class,
+        '/documents' => DocumentController::class
     ]);
 });
 
