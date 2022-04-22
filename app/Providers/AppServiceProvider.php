@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Resourcemodels\Resource;
 use Illuminate\Routing\UrlGenerator;
-// use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
         //     'resource' => Resource::class
         // ]);
 
-        if ($this->app->environment('production')) {
+        if (App::environment('production')) {
             URL::forceScheme('https');
         }
 
