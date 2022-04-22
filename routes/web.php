@@ -35,7 +35,7 @@ Route::middleware('resource.available', 'resource.content')
 
 Route::prefix('setting')->group(function () {
     Route::resources([
-        '' => SourceDomainController::class,
+        '/' => SourceDomainController::class,
         'sourcesites' => SourceDomainController::class,
         'works' => WorksController::class,
         'languages' => LanguagesController::class,
