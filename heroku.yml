@@ -1,0 +1,5 @@
+build:
+  docker:
+    web: ./vendor/laravel/sail/runtimes/8.1
+run:
+  web: bundle exec puma -C config/puma.rb
