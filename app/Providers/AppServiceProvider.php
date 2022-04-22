@@ -15,6 +15,7 @@ use App\Models\Problemmodels\Packagetool;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Resourcemodels\Resource;
+use Illuminate\Routing\UrlGenerator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(UrlGenerator $url)
     {
         // Relation::MorphMap([
         //     'languageusage' => Languageusage::class,
@@ -43,6 +44,10 @@ class AppServiceProvider extends ServiceProvider
         //     'packagetool' => Packagetool::class,
         //     'resource' => Resource::class
         // ]);
+
+        if (env('REDIRECT_HTTPS')) {
+            $url->forceScheme('https');
+        }
 
         DB::listen(function ($query) {
 
