@@ -11,9 +11,6 @@ export default function urlProccessor() {
     path['type'] = url.pathname.split('/')[1]
     path['id'] = url.pathname.split('/')[2]
 
-
-    let data = fetchApi(path)
-
-    console.log(data);
+    fetchApi(path).then(bb => console.log(bb))
 
 }

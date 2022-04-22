@@ -2157,34 +2157,34 @@ function _fetchApi() {
             _context.prev = 3;
             _context.next = 6;
             return fetch(apiurl, config).then(function (origin) {
-              var jsondata = origin.json();
-              return jsondata;
-            }).then(function (data) {
-              var newdata = data['items'][0];
+              return origin.json();
+            }).then(function (item) {
+              var origindata = item['items'][0];
               var mydata = {
-                'title': newdata.title,
-                'tags': newdata.tags,
-                'has_bestanswer': newdata.accepted_answer_id === undefined ? false : true
+                'title': origindata.title,
+                'tags': origindata.tags,
+                'has_bestanswer': origindata.accepted_answer_id === undefined ? false : true
               };
               return mydata;
+            })["catch"](function (error) {
+              return console.error(error);
             });
 
           case 6:
             response = _context.sent;
-            _context.next = 12;
-            break;
+            return _context.abrupt("return", response);
 
-          case 9:
-            _context.prev = 9;
+          case 10:
+            _context.prev = 10;
             _context.t0 = _context["catch"](3);
             console.error(_context.t0);
 
-          case 12:
+          case 13:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[3, 9]]);
+    }, _callee, null, [[3, 10]]);
   }));
   return _fetchApi.apply(this, arguments);
 }
@@ -2210,8 +2210,9 @@ function urlProccessor() {
   var path = [];
   path['type'] = url.pathname.split('/')[1];
   path['id'] = url.pathname.split('/')[2];
-  var data = (0,_fetchApi__WEBPACK_IMPORTED_MODULE_0__["default"])(path);
-  console.log(data);
+  (0,_fetchApi__WEBPACK_IMPORTED_MODULE_0__["default"])(path).then(function (bb) {
+    return console.log(bb);
+  });
 }
 
 /***/ }),
