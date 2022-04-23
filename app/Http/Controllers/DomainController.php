@@ -43,6 +43,7 @@ class DomainController extends Controller
      */
     public function store(Request $request)
     {
+
         $this->domain->domain_url = $request->domainUrl;
         $this->domain->domain_name = $request->domainName;
         $this->domain->domain_api = $request->domainApi;
