@@ -7,7 +7,7 @@
             </button>
             <div class="collapse navbar-collapse flex-row-reverse fs-4" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="/}">查詢資源</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/">查詢資源</a></li>
                     <li class="nav-item"><a class="nav-link" href="/collections/">瀏覽資源</a></li>
                     <li class="nav-item"><a class="nav-link" href="/setting/">資源網域設定</a></li>
                 </ul>
