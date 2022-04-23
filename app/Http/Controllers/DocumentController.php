@@ -32,7 +32,7 @@ class DocumentController extends Controller
             'counter' => $this->document->count()
         ];
 
-        return view('setting/{page}', ['collection' => $view]);
+        return redirect()->route('setting', ['collection' => $view]);
     }
 
     /**

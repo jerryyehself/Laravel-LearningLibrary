@@ -32,7 +32,7 @@ class EnvironmentsController extends Controller
             'content' => $this->environment->all(),
             'counter' => $this->environment->count()
         ];
-        return view('setting', ['collection' => $view]);
+        return redirect()->route('setting', ['collection' => $view]);
     }
 
     /**

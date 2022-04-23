@@ -39,7 +39,7 @@ class LanguagesController extends Controller
             ],
             'counter' => $this->language->count()
         ];
-        return view('setting', ['collection' => $view]);
+        return redirect()->route('setting', ['collection' => $view]);
     }
 
     /**

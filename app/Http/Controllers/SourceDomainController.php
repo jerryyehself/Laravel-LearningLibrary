@@ -36,7 +36,7 @@ class SourceDomainController extends Controller
             'counter' => $this->domain->count()
         ];
         // dd($view);
-        return view('setting', ['collection' => $view]);
+        return redirect()->route('setting', ['collection' => $view]);
     }
 
     /**

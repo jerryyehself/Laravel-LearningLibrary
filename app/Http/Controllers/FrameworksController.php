@@ -33,7 +33,7 @@ class FrameworksController extends Controller
             'content' => $this->framework->all(),
             'counter' => $this->framework->count()
         ];
-        return view('setting', ['collection' => $view]);
+        return redirect()->route('setting', ['collection' => $view]);
     }
 
     /**
