@@ -40,7 +40,7 @@ class WorksController extends Controller
             'counter' => $this->works->count()
         ];
 
-        return redirect()->route('setting', ['collection' => $view]);
+        return view('setting', ['collection' => $view]);
     }
 
     /**
