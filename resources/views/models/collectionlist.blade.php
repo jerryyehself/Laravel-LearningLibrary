@@ -1,6 +1,6 @@
 <h4 class="mx-auto align-middle text-light">資源類型</h4>
 <div class="list-group mx-2">
-    <a class="list-group-item list-group-item-action" href="{{url('/setting/sourcesites')}}">資源網站</a>
+    <a class="list-group-item list-group-item-action" href="/setting/sourcesites">資源網站</a>
     <a class="list-group-item list-group-item-action" href="{{url('/setting/works')}}">作品</a>
 
     <div class="accordion accordion-flush " id="practiceTypeList">
