@@ -122,9 +122,9 @@ class WorksController extends Controller
         if ($work->project_name != $request->projectTitleModify) {
             $work->project_name = $request->projectTitleModify;
             $work->save();
-            return redirect('collections/works')->with('success', '修改成功');
+            return redirect('setting/works')->with('success', '修改成功');
         }
-        return redirect('collections/works')->with('success', '未修改任何東西');
+        return redirect('setting/works')->with('success', '未修改任何東西');
     }
 
     /**

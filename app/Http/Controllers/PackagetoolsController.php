@@ -34,7 +34,7 @@ class PackagetoolsController extends Controller
             'content' => $this->packagetool->all(),
             'counter' => $this->packagetool->count()
         ];
-        return redirect()->route('setting', ['collection' => $view]);
+        return view('setting', ['collection' => $view]);
     }
 
     /**
