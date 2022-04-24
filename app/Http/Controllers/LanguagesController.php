@@ -23,13 +23,10 @@ class LanguagesController extends Controller
         $view = [
             'page' => 'languages',
             'title' => [
-                'id',
                 '程式語言',
                 '版本',
                 '作品使用率',
-                '資源數量'
-                // '建立日期',
-                // '最後修改日期'
+                '管理選項'
             ],
             'content' => [
                 'language' => $this->language->all(),

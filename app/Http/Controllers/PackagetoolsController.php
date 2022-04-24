@@ -22,7 +22,6 @@ class PackagetoolsController extends Controller
         $view = [
             'page' => 'packagetools',
             'title' => [
-                'id',
                 '外掛套件',
                 '版本',
                 '使用程式與環境',

@@ -21,13 +21,10 @@ class EnvironmentsController extends Controller
         $view = [
             'page' => 'environments',
             'title' => [
-                'id',
                 '寫作環境',
                 '版本',
                 '作品使用率',
-                '資源數量'
-                // '建立日期',
-                // '最後修改日期'
+                '管理選項'
             ],
             'content' => $this->environment->all(),
             'counter' => $this->environment->count()

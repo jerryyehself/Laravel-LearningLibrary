@@ -37,16 +37,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Relation::MorphMap([
-        //     'languageusage' => Languageusage::class,
-        //     'project' => Project::class,
-        //     'environment' => Environment::class,
-        //     'framework' => Framework::class,
-        //     'language' => Language::class,
-        //     'packagetool' => Packagetool::class,
-        //     'resource' => Resource::class
-        // ]);
-
         if (App::environment('production')) {
             URL::forceScheme('https');
         }

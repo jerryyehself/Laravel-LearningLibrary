@@ -24,10 +24,9 @@ class SourceDomainController extends Controller
         $view = [
             'page' => 'sourcesites',
             'title' => [
-                'id',
-                '網站名稱',
-                '網站Logo',
-                '資源數量'
+                '資源網域',
+                'Logo',
+                '管理選項'
             ],
             'content' => [
                 'domains' => $this->domain->all(),

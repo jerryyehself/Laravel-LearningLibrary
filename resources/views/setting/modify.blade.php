@@ -6,17 +6,22 @@
                     修改作品介紹與設定
                 </h5>
             </div>
-            <form action="{{ route('works.update', $content->id)}}" method="POST">
+            <form action="{{ route('works.update', $content->id) }} " method="POST">
                 <div class="modal-body">
                     @csrf
-                    @method('PUT')
+                    @method('PATCH')
                     <div class="row mb-3 ">
                         <label class="col-3 my-auto text-center fw-bold" for="projectTitleModify">作品名稱</label>
                         <input type="text" name="projectTitleModify" class="col form-control form-control-sm me-3" id="projectTitleModify" value="{{$content->project_name}}">
                     </div>
                     <div class="row mb-3">
                         <label class="col-3 my-auto text-center fw-bold" for="projectDomainModify">所屬網域</label>
-                        <input type="text" name="projectDomainModify" class="col form-control form-control-sm me-3" id="projectDomainModify" value="">
+                        <select name="" class="form-select form-select-sm col me-3" id="" aria-label="domain selection" id="projectDomainModify">
+                            <option value="">無</option>
+                            @foreach($collection['content']['domainlist'] as $domain)
+                            <option value="{{$domain->id}}">{{$domain->domain_name}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="row mb-3">
                         <label class="col-3 my-auto text-center fw-bold" for="projectUrlModify">作品連結</label>
@@ -31,7 +36,7 @@
                         <div class="col form-check form-switch form-check-inline">
                             <input class="form-check-input col form-control me-3" type="checkbox" role="switch" id="projectMaintenceModify" name="projectMaintenceModify" @if($content->still_maintain===1) checked @endif>
 
-                            <label class="form-check-label text-success" for="projectMaintenceModify">持續維護中</label>
+                            <label class="form-check-label text-success" for="projectMaintenceModify" id="maintencestatus">持續維護中</label>
                         </div>
                     </div>
                     <div class="row">

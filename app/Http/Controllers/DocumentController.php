@@ -22,9 +22,9 @@ class DocumentController extends Controller
         $view = [
             'page' => 'documents',
             'title' => [
-                'id',
-                '文件內容',
-                '文件語言'
+                '官方文件',
+                '文件語言',
+                '管理選項'
             ],
             'content' => [
                 'document' => $this->document->all()

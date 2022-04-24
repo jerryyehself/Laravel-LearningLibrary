@@ -3,17 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Backgroundmodels\Project;
+use App\Models\Backgroundmodels\Sourcedomain;
 use Illuminate\Http\Request;
 
 class WorksController extends Controller
 {
 
-    // protected $work;
-    // protected $id;
+
 
     public function __construct()
     {
         $this->works = new Project;
+        $this->domain = new Sourcedomain;
     }
     /**
      * Display a listing of the resource.
@@ -26,8 +27,7 @@ class WorksController extends Controller
         $view = [
             'page' => 'works',
             'title' => [
-                'id',
-                '作品名稱',
+                '作品',
                 'Git儲存庫',
                 '實作類型',
                 '詳細資料',
@@ -35,7 +35,8 @@ class WorksController extends Controller
             ],
             'content' => [
                 'work' => $this->works->all(),
-                'components' => $this->works->with('languages')->get()
+                'components' => $this->works->with('languages')->get(),
+                'domainlist' => $this->domain->all()
             ],
             'counter' => $this->works->count()
         ];
@@ -72,7 +73,6 @@ class WorksController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -83,7 +83,7 @@ class WorksController extends Controller
      */
     public function edit($id)
     {
-        // $editor = Project::find($id);
+        // $editor =  $this->works->find($id);
         // $view = [
         //     'page' => 'works/' . $id,
         //     'edittarget' => '修改作品介紹與設定',
@@ -105,7 +105,7 @@ class WorksController extends Controller
         //     ]
         // ];
 
-        // return;
+        // return view('models.collectionmodify', $view);
     }
 
     /**
@@ -117,14 +117,22 @@ class WorksController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $work = Project::find($id);
-        // dd($request->all());
+        $work =  $this->works->find($id);
+
         if ($work->project_name != $request->projectTitleModify) {
             $work->project_name = $request->projectTitleModify;
             $work->save();
-            return redirect('setting/works')->with('success', '修改成功');
+            return redirect('setting/works')->with('actionmessage', [
+                'main' => '修改成功',
+                'status' => 'success'
+            ]);
         }
-        return redirect('setting/works')->with('success', '未修改任何東西');
+
+
+        return redirect('setting/works')->with('actionmessage', [
+            'main' => '未修改任何資料',
+            'status' => ''
+        ]);
     }
 
     /**
@@ -137,6 +145,9 @@ class WorksController extends Controller
     {
         $this->works->destroy($id);
 
-        return redirect('collections/works')->with('success', '刪除成功');
+        return redirect('collections/works')->with('actionmessage', [
+            'main' => '刪除成功',
+            'status' => 'deleted'
+        ]);
     }
 }

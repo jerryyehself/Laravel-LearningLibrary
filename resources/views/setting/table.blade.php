@@ -8,20 +8,23 @@
             </tr>
         </thead>
         <tbody>
-            @if($collection['page']==='sourcesites')
+            @switch($collection['page'])
+            @case('sourcesites')
             @foreach($collection['content']['domains'] as $key => $content)
             <tr class="align-middle mx-auto">
-                <th scope="row">{{$content->id}}</th>
+                <!-- <th scope="row">{{$content->id}}</th> -->
                 <td class="font-monospace"> <a class="text-decoration-none" href="{{$content->domain_url}}">{{$content->domain_name}}</a></td>
                 <!-- <td><img src="content->domain_logo" height="25em" /></td> -->
                 <td></td>
                 <td>{{$collection['content']['sourceCounter'][$key]->resources_count}}</td>
             </tr>
             @endforeach
-            @elseif($collection['page']==='works')
+            @break
+
+            @case('works')
             @foreach($collection['content']['work'] as $key => $content)
             <tr class="align-middle mx-auto">
-                <th scope="row">{{$content->id}}</th>
+                <!-- <th scope="row">{{$content->id}}</th> -->
                 <td>
                     <a class="text-decoration-none" href="{{$content->release_url}}">
                         {{$content->project_name}}
@@ -44,40 +47,45 @@
                     <button type="button" class="btn btn-secondary btn-sm" id="detial-button" data-bs-toggle="modal" data-bs-target="#detial" data-id="{{$content->id}}">
                         查看
                     </button>
-                    @include('models.collectiondetail')
+                    @include('setting.detail')
                 </td>
                 <td>
                     <button type="button" class="btn btn-outline-primary btn-sm" id="modify-button" data-bs-toggle="modal" data-bs-target="#modify" data-id="{{$content->id}}">編輯</button>
-                    @include('models.collectionmodify')
+                    @include('setting.modify')
                     <button type="button" class="btn btn-outline-danger btn-sm" id="delete-button" data-bs-toggle="modal" data-bs-target="#delete" data-id="{{$content->id}}">刪除</button>
-                    @include('models.collectiondelete')
+                    @include('setting.delete')
                 </td>
             </tr>
             @endforeach
-            @elseif($collection['page']==='languages')
+            @break
+
+            @case('languages')
             @foreach($collection['content']['language'] as $key => $content)
             <tr class="align-middle mx-auto">
-                <th scope="row">{{$content->id}}</th>
+                <!-- <th scope="row">{{$content->id}}</th> -->
                 <td class="font-monospace">{{$content->language_name}}</td>
                 <td>{{$content->version}}</td>
                 <td>{{($collection['content']['projectUsage'][$key]->projects_count / $collection['content']['projectCount']) * 100}}%</td>
                 <td>{{$collection['content']['resourceCounter'][$key]->resources_count}}</td>
             </tr>
             @endforeach
-            @elseif($collection['page']==='environments')
+            @break
+            @case('environments')
             @foreach($collection['content'] as $content)
             <tr class="align-middle mx-auto">
-                <th scope="row">{{$content->id}}</th>
+                <!-- <th scope="row">{{$content->id}}</th> -->
                 <td class="font-monospace">{{$content->environment_name}}</td>
                 <td>{{$content->version}}</td>
                 <td></td>
                 <td></td>
             </tr>
             @endforeach
-            @elseif($collection['page']==='packagetools')
+            @break
+
+            @case('packagetools')
             @foreach($collection['content'] as $content)
             <tr class="align-middle mx-auto">
-                <th scope="row">{{$content->id}}</th>
+                <!-- <th scope="row">{{$content->id}}</th> -->
                 <td class="font-monospace">{{$content->packagetool_name}}</td>
                 <td>{{$content->version}}</td>
                 <td></td>
@@ -85,10 +93,12 @@
                 <td></td>
             </tr>
             @endforeach
-            @elseif($collection['page']==='frameworks')
+            @break
+
+            @case('frameworks')
             @foreach($collection['content'] as $content)
             <tr class="align-middle mx-auto">
-                <th scope="row">{{$content->id}}</th>
+                <!-- <th scope="row">{{$content->id}}</th> -->
                 <td class="font-monospace">{{$content->framework_name}}</td>
                 <td>{{$content->version}}</td>
                 <td></td>
@@ -96,10 +106,12 @@
                 <td></td>
             </tr>
             @endforeach
-            @elseif($collection['page']==='documents')
+            @break
+
+            @case('documents')
             @foreach($collection['content']['document'] as $content)
             <tr class="align-middle mx-auto">
-                <th scope="row">{{$content->id}}</th>
+                <!-- <th scope="row">{{$content->id}}</th> -->
                 <td class="font-monospace">{{$content->document_of}}</td>
                 <td><a href="{{$content->document_url}}"></a>{{$content->document_language}}</td>
                 <td></td>
@@ -107,7 +119,8 @@
                 <td></td>
             </tr>
             @endforeach
-            @endif
+            @break
+            @endswitch
         </tbody>
     </table>
 </div>
