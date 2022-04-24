@@ -2,11 +2,13 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
+                @switch($collection['page'])
+                @case('works')
                 <h5 class="modal-title fw-bold" id="projectModify">
                     修改作品介紹與設定
                 </h5>
             </div>
-            <form action="{{ route('works.update', $content->id) }} " method="POST">
+            <form action="{{ route($collection['page'].'.update', $content->id) }} " method="POST">
                 <div class="modal-body">
                     @csrf
                     @method('PATCH')
@@ -43,9 +45,10 @@
                         <label class="col-3 my-auto text-center fw-bold" for="projectDescriptionModify">作品說明</label>
                         <textarea name="projectDescriptionModify" class="col form-control form-control-sm me-3" id="projectDescriptionModify">{{$content->project_description}}</textarea>
                     </div>
-
+                    @break
+                    @endswitch
                 </div>
-                <div class=" modal-footer">
+                <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">放棄修改</button>
                     <button type="submit" class="btn btn-primary">儲存修改內容</button>
                 </div>

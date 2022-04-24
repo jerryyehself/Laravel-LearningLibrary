@@ -2,29 +2,24 @@
     <table class="table">
         <thead>
             <tr>
-                @foreach($collection['title'] as $title)
-                <th scope="col">{{$title}}</th>
+                @foreach($collection['title'] as $key => $title)
+                <th scope="col">{{$title}}@if($key === 0)名稱 @endif</th>
                 @endforeach
+                <th scope="col">管理選項</th>
             </tr>
         </thead>
         <tbody>
-            @switch($collection['page'])
-            @case('sourcesites')
-            @foreach($collection['content']['domains'] as $key => $content)
+            @foreach($collection['content']['target'] as $key => $content)
             <tr class="align-middle mx-auto">
-                <!-- <th scope="row">{{$content->id}}</th> -->
-                <td class="font-monospace"> <a class="text-decoration-none" href="{{$content->domain_url}}">{{$content->domain_name}}</a></td>
-                <!-- <td><img src="content->domain_logo" height="25em" /></td> -->
-                <td></td>
-                <td>{{$collection['content']['sourceCounter'][$key]->resources_count}}</td>
-            </tr>
-            @endforeach
-            @break
+                @switch($collection['page'])
 
-            @case('works')
-            @foreach($collection['content']['work'] as $key => $content)
-            <tr class="align-middle mx-auto">
-                <!-- <th scope="row">{{$content->id}}</th> -->
+                @case('sourcesites')
+                <td class="font-monospace"> <a class="text-decoration-none" href="{{$content->domain_url}}">{{$content->domain_name}}</a></td>
+                <td><img src="content->domain_logo" height="25em" /></td>
+                <!-- <td>{{$collection['content']['sourceCounter'][$key]->resources_count}}</td> -->
+                @break
+
+                @case('works')
                 <td>
                     <a class="text-decoration-none" href="{{$content->release_url}}">
                         {{$content->project_name}}
@@ -49,78 +44,48 @@
                     </button>
                     @include('setting.detail')
                 </td>
+
+                @break
+
+                @case('languages')
+                <td class="font-monospace">{{$content->language_name}}</td>
+                <td>{{$content->version}}</td>
+                <!-- <td>{{($collection['content']['projectUsage'][$key]->projects_count / $collection['content']['projectCount']) * 100}}%</td>
+                <td>{{$collection['content']['resourceCounter'][$key]->resources_count}}</td> -->
+                @break
+
+                @case('environments')
+                <td class="font-monospace">{{$content->environment_name}}</td>
+                <td>{{$content->version}}</td>
+                @break
+
+                @case('packagetools')
+                <td class="font-monospace">{{$content->packagetool_name}}</td>
+                <td>{{$content->version}}</td>
+                @break
+
+                @case('frameworks')
+                <td class="font-monospace">{{$content->framework_name}}</td>
+                <td></td>
+                <td>{{$content->version}}</td>
+                @break
+
+                @case('documents')
+                <td class="font-monospace">{{$content->document_of}}</td>
+                <td>
+                    <a href="{{$content->document_url}}">{{$content->document_language}}</a>
+                </td>
+                @break
+
+                @endswitch
                 <td>
                     <button type="button" class="btn btn-outline-primary btn-sm" id="modify-button" data-bs-toggle="modal" data-bs-target="#modify" data-id="{{$content->id}}">編輯</button>
-                    @include('setting.modify')
+                    @include('setting.crud.modify')
                     <button type="button" class="btn btn-outline-danger btn-sm" id="delete-button" data-bs-toggle="modal" data-bs-target="#delete" data-id="{{$content->id}}">刪除</button>
-                    @include('setting.delete')
+                    @include('setting.crud.delete')
                 </td>
             </tr>
             @endforeach
-            @break
-
-            @case('languages')
-            @foreach($collection['content']['language'] as $key => $content)
-            <tr class="align-middle mx-auto">
-                <!-- <th scope="row">{{$content->id}}</th> -->
-                <td class="font-monospace">{{$content->language_name}}</td>
-                <td>{{$content->version}}</td>
-                <td>{{($collection['content']['projectUsage'][$key]->projects_count / $collection['content']['projectCount']) * 100}}%</td>
-                <td>{{$collection['content']['resourceCounter'][$key]->resources_count}}</td>
-            </tr>
-            @endforeach
-            @break
-            @case('environments')
-            @foreach($collection['content'] as $content)
-            <tr class="align-middle mx-auto">
-                <!-- <th scope="row">{{$content->id}}</th> -->
-                <td class="font-monospace">{{$content->environment_name}}</td>
-                <td>{{$content->version}}</td>
-                <td></td>
-                <td></td>
-            </tr>
-            @endforeach
-            @break
-
-            @case('packagetools')
-            @foreach($collection['content'] as $content)
-            <tr class="align-middle mx-auto">
-                <!-- <th scope="row">{{$content->id}}</th> -->
-                <td class="font-monospace">{{$content->packagetool_name}}</td>
-                <td>{{$content->version}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            @endforeach
-            @break
-
-            @case('frameworks')
-            @foreach($collection['content'] as $content)
-            <tr class="align-middle mx-auto">
-                <!-- <th scope="row">{{$content->id}}</th> -->
-                <td class="font-monospace">{{$content->framework_name}}</td>
-                <td>{{$content->version}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            @endforeach
-            @break
-
-            @case('documents')
-            @foreach($collection['content']['document'] as $content)
-            <tr class="align-middle mx-auto">
-                <!-- <th scope="row">{{$content->id}}</th> -->
-                <td class="font-monospace">{{$content->document_of}}</td>
-                <td><a href="{{$content->document_url}}"></a>{{$content->document_language}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            @endforeach
-            @break
-            @endswitch
         </tbody>
     </table>
 </div>

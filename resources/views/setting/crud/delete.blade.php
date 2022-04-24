@@ -3,25 +3,29 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title fw-bold" id="exampleModalLabel">
-                    是否確定刪除作品?
+                    是否確定刪除{{$collection['title'][$key]}}?
                 </h5>
             </div>
-            <form action="{{ route('works.destroy', $content->id)}}" method="POST">
+            <form action="{{ route($collection['page'].'.destroy', $content->id)}}" method="POST">
                 <div class="modal-body">
 
                     @csrf
                     @method("DELETE")
-                    <div class="row mb-3 ">
+
+                    <div class="row mb-3">
+                        @switch($collection['page'])
+                        @case('works')
                         <label class="col-3 my-auto text-center fw-bold" for="projectTitleDelete">作品名稱</label>
                         <div class="col me-3" id="projectTitleDelete">
                             {{$content->project_name}}
                         </div>
                     </div>
-                    <div class=" row">
+                    <div class="row">
                         <label class="col-3 my-auto text-center fw-bold" for="projectDescriptionDelete">作品說明</label>
                         <div class="col me-3" id="projectDescriptionDelete">{{$content->project_description}}</div>
+                        @break
+                        @endswitch
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-danger" id="{{$content->id}}_drop">確定刪除</button>

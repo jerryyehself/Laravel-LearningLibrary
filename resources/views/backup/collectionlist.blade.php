@@ -21,5 +21,5 @@
         </div>
     </div>
 
-    <a class="list-group-item list-group-item-action" href="documents">官方文件</a>
+    <a class="list-group-item list-group-item-action" href="{{url('/setting/documents')}}">官方文件</a>
 </div>

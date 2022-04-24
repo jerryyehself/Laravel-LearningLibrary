@@ -23,10 +23,8 @@ class EnvironmentsController extends Controller
             'title' => [
                 '寫作環境',
                 '版本',
-                '作品使用率',
-                '管理選項'
             ],
-            'content' => $this->environment->all(),
+            'content' => ['target' => $this->environment->all()],
             'counter' => $this->environment->count()
         ];
         return view('setting', ['collection' => $view]);

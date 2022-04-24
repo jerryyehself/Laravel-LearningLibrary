@@ -23,11 +23,10 @@ class DocumentController extends Controller
             'page' => 'documents',
             'title' => [
                 '官方文件',
-                '文件語言',
-                '管理選項'
+                '文件語言'
             ],
             'content' => [
-                'document' => $this->document->all()
+                'target' => $this->document->all()
             ],
             'counter' => $this->document->count()
         ];

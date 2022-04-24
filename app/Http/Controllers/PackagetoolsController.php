@@ -24,13 +24,9 @@ class PackagetoolsController extends Controller
             'title' => [
                 '外掛套件',
                 '版本',
-                '使用程式與環境',
-                '作品使用率',
-                '資源數量'
-                // '建立日期',
-                // '最後修改日期'
+
             ],
-            'content' => $this->packagetool->all(),
+            'content' => ['target' => $this->packagetool->all()],
             'counter' => $this->packagetool->count()
         ];
         return view('setting', ['collection' => $view]);

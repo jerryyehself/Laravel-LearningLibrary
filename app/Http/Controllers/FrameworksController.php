@@ -21,13 +21,11 @@ class FrameworksController extends Controller
         $view = [
             'page' => 'frameworks',
             'title' => [
-                '程式框架',
+                '框架',
                 '版本',
-                '使用程式與環境',
-                '作品使用率',
-                '管理選項'
+                '使用程式與環境'
             ],
-            'content' => $this->framework->all(),
+            'content' => ['target' => $this->framework->all()],
             'counter' => $this->framework->count()
         ];
         return view('setting', ['collection' => $view]);

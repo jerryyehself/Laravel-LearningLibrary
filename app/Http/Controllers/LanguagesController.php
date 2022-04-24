@@ -24,12 +24,10 @@ class LanguagesController extends Controller
             'page' => 'languages',
             'title' => [
                 '程式語言',
-                '版本',
-                '作品使用率',
-                '管理選項'
+                '版本'
             ],
             'content' => [
-                'language' => $this->language->all(),
+                'target' => $this->language->all(),
                 'projectCount' => $project->count(),
                 'projectUsage' => $this->language->withCount('projects')->get(),
                 'resourceCounter' => $this->language->withCount('resources')->get()

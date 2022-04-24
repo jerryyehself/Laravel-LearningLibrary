@@ -7,6 +7,7 @@
 
     </div>
     <div class="d-flex flex-column container my-4">
+
         @isset($collection)
 
         <nav class="d-flex align-items-center mx-3" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -14,7 +15,8 @@
             <ol class="breadcrumb flex-grow-1 my-auto align-items-center">
                 <li class="flex-grow-1 breadcrumb-item active text-align-middle" aria-current="page">{{$collection['title'][0]}}</li>
                 <li class="justify-content-end">
-                    <button type="button" class="btn btn-sm btn-primary">新增</button>
+                    <button type="button" class="btn btn-lg btn-primary" id="insert-button" data-bs-toggle="modal" data-bs-target="#insert">新增{{$collection['title'][0]}}</button>
+                    @include('setting.crud.insert')
                 </li>
             </ol>
         </nav>

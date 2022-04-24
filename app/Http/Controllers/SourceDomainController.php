@@ -25,11 +25,10 @@ class SourceDomainController extends Controller
             'page' => 'sourcesites',
             'title' => [
                 '資源網域',
-                'Logo',
-                '管理選項'
+                'Logo'
             ],
             'content' => [
-                'domains' => $this->domain->all(),
+                'target' => $this->domain->all(),
                 'sourceCounter' => $this->domain->withCount('resources')->get()
             ],
             'counter' => $this->domain->count()

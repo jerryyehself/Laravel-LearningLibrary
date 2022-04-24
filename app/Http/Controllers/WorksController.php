@@ -30,11 +30,10 @@ class WorksController extends Controller
                 '作品',
                 'Git儲存庫',
                 '實作類型',
-                '詳細資料',
-                '管理選項'
+                '詳細資料'
             ],
             'content' => [
-                'work' => $this->works->all(),
+                'target' => $this->works->all(),
                 'components' => $this->works->with('languages')->get(),
                 'domainlist' => $this->domain->all()
             ],

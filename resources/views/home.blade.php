@@ -1,15 +1,15 @@
 @extends('models.main_model')
 @section('content')
-<main class="d-flex flex-column flex-grow-1 align-items-center justify-content-center mb-5 position-relative">
+<main class="d-flex flex-column flex-grow-1 align-items-center @if(!isset($resource)) justify-content-center @endif mb-5">
 
-    <div id="input" class="d-flex flex-column justify-content-center mt-4">
+    <div id="input" class="d-flex flex-column justify-content-center mt-2">
         @if(!isset($resource))
         <span id="main-information" class="align-items-center fs-3 px-2">查詢已有文章或加入新資源</span>
         @endif
-        <form method="POST" action="" class="input-group fs-3 pt-4 pb-5 mb-3">
+        <form method="POST" action="" class="input-group fs-3 pt-4 mb-3">
             @csrf
             <input type="url" name="resource" id="resource" class="form-control-md form-control rounded-start" placeholder="http://..." />
-            <button type="button" id="search" class="form-control-md btn btn-outline-secondary rounded-end ">查詢</button>
+            <input type="submit" id="search" class="form-control-md btn btn-outline-secondary @if(!isset($resource)) rounded-end @endif " value="查詢" />
             @isset($resource)
             <button type="button" id="insert" class="form-control-sm btn btn-outline-secondary btn-sm rounded-end" disabled>加入資源</button>
             @endisset
@@ -26,7 +26,7 @@
 
     <div id="result" class="d-flex flex-column align-items-center px-5 mt-4 w-100">
         @isset($resource)
-
+        <h3 class="d-flex align-items-start">查詢結果</h3>
         <table id="resources" class="table">
             <thead>
                 <tr>
