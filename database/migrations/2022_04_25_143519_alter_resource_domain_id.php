@@ -15,8 +15,8 @@ class AlterResourceDomainId extends Migration
     public function up()
     {
         Schema::table('resources', function (Blueprint $table) {
-            // $table->dropColumn('title');
-            $table->foreignIdFor(Sourcedomain::class)->change();
+            $table->dropColumn('domain_id');
+            $table->foreignIdFor(Sourcedomain::class)->constrained();
             $table->text('title')->change();
         });
     }
