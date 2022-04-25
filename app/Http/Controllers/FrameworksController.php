@@ -23,7 +23,6 @@ class FrameworksController extends Controller
             'title' => [
                 '框架',
                 '版本',
-                '使用程式與環境'
             ],
             'content' => ['target' => $this->framework->all()],
             'counter' => $this->framework->count()

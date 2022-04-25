@@ -21,7 +21,7 @@ class Sourcedomain extends Model
 
     public function resources()
     {
-        return $this->hasMany(Resource::class, 'domain_id');
+        return $this->hasMany(Resource::class);
     }
 
     public function projects()

@@ -22,7 +22,7 @@ class Resource extends Model
 
     protected $fillable = [
         'title',
-        'domain_id',
+        'sourcedomain_id',
         'location',
         'content_language',
         'creation_date',
@@ -34,7 +34,7 @@ class Resource extends Model
     // from domain
     public function sourcedomain()
     {
-        return $this->belongsTo(Sourcedomain::class, 'domain_id');
+        return $this->belongsTo(Sourcedomain::class);
     }
 
     //is about languages

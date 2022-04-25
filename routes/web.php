@@ -13,7 +13,7 @@ use App\Http\Controllers\PackagetoolsController;
 use App\Http\Controllers\FrameworksController;
 use App\Http\Controllers\EnvironmentsController;
 
-/*
+    /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
@@ -22,14 +22,18 @@ use App\Http\Controllers\EnvironmentsController;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
-
-Route::view('/', 'home');
+*/;
 
 Route::get('/insertdomain/{all_domain}', [DomainController::class, 'store']);
 
-Route::middleware('resource.available', 'resource.content')
-    ->post('/', [ParserController::class, 'index']);
+Route::prefix('/')->group(function () {
+    Route::middleware('resource.available', 'resource.content')
+        ->post('/resource/search', [ParserController::class, 'search']);
+    Route::post('/resource/create', [ParserController::class, 'store']);
+    Route::get('', function () {
+        return view('home');
+    });
+});
 // Route::post('/', [ParserController::class, 'index']);
 
 

@@ -23,9 +23,13 @@ class ResourceContentIdentify
 
         $view = [
             'domain' => $resource_url_components[2],
-            'resourcetitle' => $data['items'][0]['title'],
-            'bestanswer' => isset($data['items'][0]['accepted_answer_id']) === true ? true : false,
-            'tags' => $data['items'][0]['tags']
+            'content_language' => 'eng',
+            'title' => $data['items'][0]['title'],
+            // 'bestanswer' => isset($data['items'][0]['accepted_answer_id']) === true ? true : false,
+            'tags' => $data['items'][0]['tags'],
+            'location' => $resource_url_components[4],
+            'creation_date' => $data['items'][0]['creation_date'],
+            'last_answer_date' => $data['items'][0]['last_activity_date'],
         ];
 
         $request->merge($view);

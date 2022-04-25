@@ -18,7 +18,7 @@ class ResourceFactory extends Factory
         return [
             'title' => $this->faker->name(),
             'location' => $this->faker->url(),
-            'domain_id' => $this->faker->randomNumber(),
+            'sourcedomain_id' => $this->faker->randomNumber(),
             'content_language' => $this->faker->languageCode(),
             'creation_date' => $this->faker->dateTime(),
             'last_answer_date' => $this->faker->dateTime(),

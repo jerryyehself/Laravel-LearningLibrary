@@ -24,7 +24,6 @@ class PackagetoolsController extends Controller
             'title' => [
                 '外掛套件',
                 '版本',
-
             ],
             'content' => ['target' => $this->packagetool->all()],
             'counter' => $this->packagetool->count()
