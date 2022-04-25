@@ -16,7 +16,7 @@
                 @case('sourcesites')
                 <td class="font-monospace"> <a class="text-decoration-none" href="{{$content->domain_url}}">{{$content->domain_name}}</a></td>
                 <td><img src="content->domain_logo" height="25em" /></td>
-
+                <!-- <td>{{$collection['content']['sourceCounter'][$key]->resources_count}}</td> -->
                 @break
 
                 @case('works')
@@ -50,7 +50,8 @@
                 @case('languages')
                 <td class="font-monospace">{{$content->language_name}}</td>
                 <td>{{$content->version}}</td>
-
+                <!-- <td>{{($collection['content']['projectUsage'][$key]->projects_count / $collection['content']['projectCount']) * 100}}%</td>
+                <td>{{$collection['content']['resourceCounter'][$key]->resources_count}}</td> -->
                 @break
 
                 @case('environments')

@@ -29,7 +29,7 @@ class SourceDomainController extends Controller
             ],
             'content' => [
                 'target' => $this->domain->all(),
-                'sourceCounter' => $this->domain->withCount('resources')->get()
+                // 'sourceCounter' => $this->domain->withCount('resources')->get()
             ],
             'counter' => $this->domain->count()
         ];
