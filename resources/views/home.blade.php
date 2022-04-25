@@ -82,6 +82,7 @@
     @if(session('status'))
     <p>
         {{session('status')}}
+        {{session('result')}}
     </p>
     @endif
 </main>

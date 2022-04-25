@@ -49,7 +49,10 @@ class ParserController extends Controller
             // dd($this->resource->title);
             try {
                 $this->resource->save();
-                return redirect('/')->with('status', '新增成功');
+                return redirect('/')->with([
+                    'status' => '新增成功',
+                    'result' => $this->resource
+                ]);
             } catch (Exception $e) {
                 return 'wrong because' . $e;
             }
