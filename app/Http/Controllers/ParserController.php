@@ -45,7 +45,7 @@ class ParserController extends Controller
             $this->resource->creation_date = now();
             // $this->resource->last_answer_date = $request->last_answer_date;
             $this->resource->last_answer_date = now();
-            $this->resource->sourcedomain_id = Sourcedomain::find(1)->resources->first()->id;
+            $this->resource->sourcedomain_id = Sourcedomain::where('domain_name', 'stackoverflow')->first()->id;
             // dd($this->resource->title);
             try {
                 $this->resource->save();
