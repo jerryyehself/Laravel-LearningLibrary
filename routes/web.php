@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CollectionPageController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\FormContentController;
@@ -36,6 +37,15 @@ Route::prefix('/')->group(function () {
 });
 // Route::post('/', [ParserController::class, 'index']);
 
+Route::prefix('collections')->group(function () {
+    Route::get('/', [CollectionPageController::class, 'menu']);
+    Route::get('/works', [CollectionPageController::class, 'work']);
+    Route::get('/languages', [CollectionPageController::class, 'language']);
+    Route::get('/packagetools', [CollectionPageController::class, 'packagetool']);
+    Route::get('/environments', [CollectionPageController::class, 'environment']);
+    Route::get('/frameworks', [CollectionPageController::class, 'framework']);
+    Route::get('/documents', [CollectionPageController::class, 'document']);
+});
 
 Route::prefix('setting')->group(function () {
     Route::resources([
