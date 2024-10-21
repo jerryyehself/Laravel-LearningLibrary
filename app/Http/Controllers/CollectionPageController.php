@@ -2,24 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Backgroundmodels\Project;
+use App\Service\GitService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CollectionPageController extends Controller
 {
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
 
     public function menu()
     {
-        $view = [];
-        return view('collections');
+        return view(
+            'collections',
+            [
+                'works' => $this->works(),
+                // 'staticCards' => $this->staticCards()
+            ]
+        );
     }
-    public function work()
+
+    public function works()
     {
-        $view = [];
-        return view('collections');
+        return Project::all()->map(function ($work) {
+            $work['repo_created_at'] = Carbon::parse($work['repo_created_at'])->format('Y-m-d');
+            $work['repo_updated_at'] = Carbon::parse($work['repo_updated_at'])->format('Y-m-d');
+            return $work;
+        });
     }
 
     public function language()

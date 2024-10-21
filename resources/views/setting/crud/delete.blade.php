@@ -3,6 +3,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title fw-bold" id="exampleModalLabel">
+                    @dd($collection['title'])
+
                     是否確定刪除{{$collection['title'][$key]}}?
                 </h5>
             </div>

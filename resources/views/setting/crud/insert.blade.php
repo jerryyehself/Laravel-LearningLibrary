@@ -7,10 +7,11 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{url($collection['page'].'.store')}}" method="POST">
+            <form action="{{url(Request::segment(2).'.store')}}" method="POST">
                 @csrf
                 <div class="modal-body d-flex flex-column">
-                    @switch($collection['page'])
+
+                    @switch(Request::segment(2))
                     @case('works')
                     <div class="row mb-3 ">
                         <label class="col-3 my-auto text-center fw-bold" for="projectTitleInsert">作品名稱</label>

@@ -1,30 +1,32 @@
-@extends('models.main_model')
+@extends('models.mainModel')
 @section('content')
-<main class="d-flex flex-column flex-grow-1 align-items-center @if(!isset($resource)) justify-content-center @endif mb-5">
 
-    <div id="input" class="d-flex flex-column justify-content-center mt-2">
-        @if(!isset($resource))
-        <span id="main-information" class="align-items-center fs-3 px-2">查詢已有文章或加入新資源</span>
-        @endif
-        <form method="POST" action="{{url('/resource/search')}}" id="searchForm" class="input-group fs-3 pt-4 mb-3">
-            @csrf
-            <input type="url" name="resource" id="resource" class="form-control-md form-control rounded-start" placeholder="http://..." />
-            <input type="submit" id="search" class="form-control-md btn btn-outline-secondary @if(!isset($resource)) rounded-end @endif " value="查詢" />
-            @isset($resource)
-            <input type="submit" id="insert" class="form-control-sm btn btn-outline-secondary btn-sm rounded-end" form="insertForm" value="加入資源" />
-            @endisset
-        </form>
+<div id="input" class="d-flex flex-column w-100">
+    @if(!isset($resource))
+    <h3 id="main-information" class="align-items-center my-3">查詢作品</h3>
+    @endif
+    <!-- <form method="POST" action="{{url('/resource/search')}}" id="searchForm" class="input-group fs-3 pt-4 mb-3"> -->
+    @csrf
+    <input type="text" name="resource" id="resource" class="form-control-md form-control rounded-start" placeholder="" />
+    <!-- <input type="submit" id="search" class="form-control-md btn btn-outline-secondary @if(!isset($resource)) rounded-end @endif " value="查詢" /> -->
+    @isset($resource)
+    <input type="submit" id="insert" class="form-control-sm btn btn-outline-secondary btn-sm rounded-end" form="insertForm" value="加入資源" />
+    @endisset
+    <!-- </form> -->
+</div>
 
-    </div>
+<div id="loading" class="d-none">
 
-    <div id="loading" class="d-none">
+    <div class="spinner-border ms-auto spinner-border-sm m-2" role="status" aria-hidden="true"></div>
+    <strong>Loading...</strong>
 
-        <div class="spinner-border ms-auto spinner-border-sm m-2" role="status" aria-hidden="true"></div>
-        <strong>Loading...</strong>
+</div>
 
-    </div>
+<div id="search_history" class="d-flex mt-1">
+    @include('home.searchHistoryTable')
+</div>
 
-    <div id="result" class="d-flex flex-column align-items-center px-5 mt-4 w-100">
+<!-- <div id="result" class="d-flex flex-column align-items-center px-5 mt-4 w-100">
         @isset($resource)
         <h3 class="d-flex align-items-start">查詢結果</h3>
         <table id="resources" class="table">
@@ -52,9 +54,9 @@
                             <input type="hidden" name="creation_date" value="{{$resource->creation_date}}" />
                             <input type="hidden" name="last_answer_date" value="{{$resource->last_answer_date}}" />
                             {{$resource->title}}
-                            <!-- @if($resource->bestanswer === true)
+                            @if($resource->bestanswer === true)
                             <i id="useful" class="bi bi-check-circle-fill ps-2"></i>
-                            @endif -->
+                            @endif
                         </td>
                         <td class="col-2 ">
 
@@ -78,12 +80,11 @@
             </tbody>
         </table>
         @endisset
-    </div>
-    @if(session('status'))
-    <p>
-        {{session('status')}}
-        {{session('result')}}
-    </p>
-    @endif
-</main>
+    </div> -->
+@if(session('status'))
+<p>
+    {{session('status')}}
+    {{session('result')}}
+</p>
+@endif
 @endsection

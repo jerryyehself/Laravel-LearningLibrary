@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateResourceusagesTable extends Migration
+class AddReposName extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateResourceusagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('resourceusages', function (Blueprint $table) {
-            $table->id();
-            // $table->timestamps();
+        Schema::table('projects', function (Blueprint $table) {
+            $table->renameColumn('git_repository_url', 'git_repository_name')->comment('儲存庫名稱');
+            $table->dropColumn('repo_name');
         });
     }
 
@@ -26,6 +26,8 @@ class CreateResourceusagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('resourceusages');
+        Schema::table('project', function (Blueprint $table) {
+            //
+        });
     }
 }

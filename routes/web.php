@@ -13,6 +13,9 @@ use App\Http\Controllers\LanguagesController;
 use App\Http\Controllers\PackagetoolsController;
 use App\Http\Controllers\FrameworksController;
 use App\Http\Controllers\EnvironmentsController;
+use App\Http\Controllers\GitInfoController;
+use App\Http\Controllers\SettingPageController;
+use App\Http\Controllers\StaticPageController;
 
     /*
 |--------------------------------------------------------------------------
@@ -24,21 +27,20 @@ use App\Http\Controllers\EnvironmentsController;
 | contains the "web" middleware group. Now create something great!
 |
 */;
-
 Route::get('/insertdomain/{all_domain}', [DomainController::class, 'store']);
 
 Route::prefix('/')->group(function () {
-    Route::middleware('resource.available', 'resource.content')
-        ->post('/resource/search', [ParserController::class, 'search']);
-    Route::post('/resource/create', [ParserController::class, 'store']);
+    // Route::middleware('resource.available', 'resource.content')
+    //     ->post('/resource/search', [ParserController::class, 'search']);
+    // Route::post('/resource/create', [ParserController::class, 'store']);
     Route::get('', function () {
         return view('home');
-    });
+    })->name('home');
 });
 // Route::post('/', [ParserController::class, 'index']);
 
 Route::prefix('collections')->group(function () {
-    Route::get('/', [CollectionPageController::class, 'menu']);
+    Route::get('/', [CollectionPageController::class, 'menu'])->name('collections');
     Route::get('/works', [CollectionPageController::class, 'work']);
     Route::get('/languages', [CollectionPageController::class, 'language']);
     Route::get('/packagetools', [CollectionPageController::class, 'packagetool']);
@@ -47,18 +49,25 @@ Route::prefix('collections')->group(function () {
     Route::get('/documents', [CollectionPageController::class, 'document']);
 });
 
+Route::prefix('statics')->group(function () {
+    Route::get('/', [StaticPageController::class, 'index'])->name('statics');
+});
+
 Route::prefix('setting')->group(function () {
+
     Route::resources([
-        '/' => SourceDomainController::class,
         '/sourcesites' => SourceDomainController::class,
         '/works' => WorksController::class,
-        '/languages' => LanguagesController::class,
-        '/packagetools' => PackagetoolsController::class,
-        '/environments' => EnvironmentsController::class,
-        '/frameworks' => FrameworksController::class,
+        '/practiceType_languages' => LanguagesController::class,
+        '/practiceType_packagetools' => PackagetoolsController::class,
+        '/practiceType_environments' => EnvironmentsController::class,
+        '/practiceType_frameworks' => FrameworksController::class,
         '/documents' => DocumentController::class
     ]);
 });
+
+Route::get('test', [GitInfoController::class, 'GetRepos']);
+
 
 // Route::post('/setting/domain', [DomainController::class, 'store']);
 // Route::prefix('collection')->group(function () {

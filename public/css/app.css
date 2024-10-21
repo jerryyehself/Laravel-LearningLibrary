@@ -1,4 +1,5 @@
-html, body{
+html,
+body {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -18,7 +19,81 @@ html, body{
     color: skyblue;
 }
 
-#loading{
+#loading {
     align-items: center;
 }
 
+.ui-autocomplete {
+    z-index: 10000000;
+}
+
+
+.ui-helper-hidden-accessible {
+    display: none;
+}
+
+#search_history {
+    max-height: 100%;
+    width: 100%;
+    overflow-y: auto;
+}
+
+#search_history thead th {
+    position: sticky;
+    top: 40px;
+    background-color: #f8f9fa;
+    /* 固定表頭的背景色 */
+    z-index: 1;
+    border-bottom: 1px solid black;
+    /* 確保表頭不會被內容覆蓋 */
+}
+
+#search_history caption {
+    caption-side: top;
+    /* 預設為在表格頂部 */
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+}
+
+#search_history tbody {
+    max-height: 100%;
+}
+
+main {
+    overflow-y: auto;
+}
+
+main::-webkit-scrollbar {
+    display: none;
+}
+
+.static-chart-container {
+    height: 50vh;
+}
+
+#static_chart {
+    width: 75vw;
+    height: 50vw;
+}
+
+/* 
+.autocomplete-items {
+    border: 1px solid #d4d4d4;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: #fff;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+}
+
+.autocomplete-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.autocomplete-item:hover {
+    background-color: #e9ecef;
+} */

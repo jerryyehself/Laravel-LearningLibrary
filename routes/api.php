@@ -1,12 +1,27 @@
 <?php
 
+use App\GraphQL\Types\QType;
+use App\GraphQL\Types\ViewerType;
+use App\Http\Controllers\ChartsDataController;
 use App\Http\Controllers\ParserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NewParserController;
 use App\Http\Controllers\DomainController;
+use App\Http\Controllers\WorkSearchController;
 use App\Http\Resources\DomainResource;
+use App\Models\Backgroundmodels\Project;
 use App\Models\Backgroundmodels\Sourcedomain;
+use App\Models\ProjectElement;
+use App\Notifications\GitUpdateStatus;
+use App\Notify\GitNotifiable;
+use App\Service\SaveReposDataService;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Notification;
+use Rebing\GraphQL\GraphQL as GraphQLGraphQL;
+use Rebing\GraphQL\Support\Facades\GraphQL;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,8 +39,98 @@ use App\Models\Backgroundmodels\Sourcedomain;
 // });
 
 Route::middleware('resource.available', 'resource.content')->resource('/user', ParserController::class);
+Route::post(
+    'gitChartsData',
+    [ChartsDataController::class, 'setChart']
+);
+Route::post(
+    'gitChartsDataa',
+    [ChartsDataController::class, 'setChart']
+);
+Route::get('graphQLtest', function () {
+    // $test = new Project;
+    // dd($test->find(1)->first()->projectElements->values('element_name'));
+    // $queryType = new ObjectType([
+    //     'name' => 'Query',
+    //     'fields' => [
+    //         'customer' => [
+    //             'type' => $userType,
+    //             'args' => [
+    //                 'id' => Type::int(),
+    //             ],
+    //             'resolve' => function ($root, $args) {
+    //                 $returnArray = [];
+    //                 foreach ($root as $key => $customer) {
+    //                     if ($customer["id"] == $args["id"])
+    //                         $returnArray = $customer;
+    //                 }
+    //                 return $returnArray;
+    //             }
+    //         ],
+    //     ],
+    // ]);
+    $response = Http::withToken(config('services.github.token'))->post('https://api.github.com/graphql', [
+        'query' =>
+        new QType([
+            'name' => 'viewer',
+            'fields' => [
+                'repositories' => [
+                    // 'type' => new ViewerType,
+                    'type' => Type::string(),
+                    'arg' => [
+                        'message' => Type::nonNull(Type::string())
+                    ],
+                    'resolve' => function ($root, $args) {
+                        return $root['prefix'];
+                    }
+                ],
+            ],
+        ])
+        //     '
+        //     {
+        //         viewer {
+        //             repositories(
+        //                 orderBy: {
+        //                     field: UPDATED_AT,
+        //                     direction: DESC
+        //                 },
+        //                 first: 100,
+        //                 privacy: PUBLIC
+        //             ) {
+        //                 nodes {
+        //                     name
+        //                     languages(first: 100) {
+        //                         nodes {
+        //                             name
+        //                             color
+        //                         }
+        //                     }
+        //                 }
+        //                 totalCount
+        //             }
+        //         }
+        //     }
+        // ',
+    ]);
+    dd($response->json());
+    return response()->json($response);
+    $test = new SaveReposDataService;
+    return $test->saveReposData();
+});
 
+Route::post(
+    'gitInfos',
+    [WorkSearchController::class, 'search']
+);
 
+Route::get(
+    'mailtest',
+    function () {
+        $noitfy = new GitNotifiable;
+        $noitfy->notify(new GitUpdateStatus());
+        return response('send success');
+    }
+);
 
 // Route::apiResource('/setting', DomainController::class);
 Route::get('/setting/domain/{domain}', [DomainController::class, 'show']);

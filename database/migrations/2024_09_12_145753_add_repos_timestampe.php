@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLanguageusagesTable extends Migration
+class AddReposTimestampe extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateLanguageusagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('languageusages', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('language_id')->constrained('languages');
-            $table->Morphs('languageusage');
-            $table->softDeletes();
+        Schema::table('projects', function (Blueprint $table) {
+            $table->timestamp('repo_created_at')->comment('儲存庫建立時間');
+            $table->timestamp('repo_updated_at')->comment('儲存庫更新時間');
         });
     }
 
@@ -28,6 +26,8 @@ class CreateLanguageusagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('languageusages');
+        Schema::table('project', function (Blueprint $table) {
+            //
+        });
     }
 }

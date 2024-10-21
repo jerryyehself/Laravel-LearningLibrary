@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class SourceDomainController extends Controller
 {
+    private $domain;
     public function __construct()
     {
         $this->domain = new Sourcedomain;
@@ -20,7 +21,6 @@ class SourceDomainController extends Controller
      */
     public function index()
     {
-
         $view = [
             'page' => 'sourcesites',
             'title' => [

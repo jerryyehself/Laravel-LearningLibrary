@@ -9,8 +9,7 @@ use Illuminate\Http\Request;
 class WorksController extends Controller
 {
 
-
-
+    public $works, $domain;
     public function __construct()
     {
         $this->works = new Project;
@@ -25,16 +24,14 @@ class WorksController extends Controller
     {
 
         $view = [
-            'page' => 'works',
             'title' => [
                 '作品',
-                'Git儲存庫',
                 '實作類型',
                 '詳細資料'
             ],
             'content' => [
                 'target' => $this->works->all(),
-                'components' => $this->works->with('languages')->get(),
+                'components' => $this->works->with('projectElements')->get(),
                 'domainlist' => $this->domain->all()
             ],
             'counter' => $this->works->count()
@@ -70,9 +67,7 @@ class WorksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-    }
+    public function show($id) {}
 
     /**
      * Show the form for editing the specified resource.

@@ -2,13 +2,13 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                @switch($collection['page'])
+                @switch(Request::segment(2))
                 @case('works')
                 <h5 class="modal-title fw-bold" id="projectModify">
                     修改作品介紹與設定
                 </h5>
             </div>
-            <form action="{{ route($collection['page'].'.update', $content->id) }} " method="POST">
+            <form action="{{ route(Request::segment(2).'.update', $content->id) }} " method="POST">
                 <div class="modal-body">
                     @csrf
                     @method('PATCH')

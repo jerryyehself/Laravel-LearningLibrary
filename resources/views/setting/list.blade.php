@@ -1,25 +1,49 @@
-<h4 class="mx-auto align-middle text-light">設定項目</h4>
-<div class="list-group mx-2">
-    <a class="list-group-item list-group-item-action" href="{{url('/setting/sourcesites')}}">資源網域</a>
-    <a class="list-group-item list-group-item-action" href="{{url('/setting/works')}}">作品</a>
+<div class="list-group list-group-flush">
+    @foreach($settingList as $settingItem => $setting)
 
-    <div class="accordion accordion-flush " id="practiceTypeList">
+    @switch($setting['type'])
+
+    @case('btnList')
+
+    <div class="accordion accordion-flush " id="{{ $settingItem }}">
         <div class="accordion-item">
-            <button type="button" class="list-group-item-action accordion-button border-0 accordion-button collapsed px-3 py-2" data-bs-toggle="collapse" data-bs-target="#practiceType" aria-expanded="false" aria-current="true" aria-controls="practiceType">
-                實作類型
+            <button type="button"
+                class="list-group-item-action accordion-button px-3 py-2 accordion-button {{ Request::is( '*' . $settingItem . '*') ?: 'collapsed' }}"
+                data-bs-toggle="collapse"
+                data-bs-target="#{{ $settingItem }}Container"
+                aria-expanded="false"
+                aria-current="true"
+                aria-controls="{{ $settingItem }}Container">
+                {{ $setting['label'] }}
             </button>
-            <div id="practiceType" class="accordion-collapse collapse">
+
+            <div id="{{ $settingItem }}Container" class="accordion-collapse {{ Request::is( '*' . $settingItem . '*') ?: 'collapse' }}">
                 <div class="accordion-body">
                     <div class="list-group list-group-flush">
-                        <a class="list-group-item list-group-item-action accordion-body" href="{{url('/setting/languages')}}">程式語言</a>
-                        <a class="list-group-item list-group-item-action accordion-body" href="{{url('/setting/packagetools')}}">工具套件</a>
-                        <a class="list-group-item list-group-item-action accordion-body" href="{{url('/setting/environments')}}">環境</a>
-                        <a class="list-group-item list-group-item-action accordion-body" href="{{url('/setting/frameworks')}}">框架</a>
+                        @foreach($setting['sub'] as $subItem => $sub)
+                        <a
+                            class="list-group-item list-group-item-action accordion-body {{ !Request::is('setting/'. $settingItem . '_' . $subItem) ?: 'active' }}"
+                            id="{{ $subItem }}"
+                            href="{{ route( $settingItem . '_' . $subItem . '.index') }}">
+                            {{ $sub['label'] }}
+                        </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @break
 
-    <a class="list-group-item list-group-item-action" href="{{url('/setting/documents')}}">官方文件</a>
+    @default
+    <a
+        class="list-group-item list-group-item-action {{ !Request::is('setting/'.$settingItem) ?: 'active' }}"
+        id="{{ $settingItem }}"
+        href="{{ route( $settingItem. '.index' ) }}">
+        {{ $setting['label'] }}
+    </a>
+
+    @endswitch
+    @endforeach
+
 </div>
