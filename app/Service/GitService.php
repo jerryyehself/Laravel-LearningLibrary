@@ -13,7 +13,6 @@ use Throwable;
 class GitService
 {
 
-    // private const TOKEN = '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';
     private $accessGit;
 
     public function __construct()

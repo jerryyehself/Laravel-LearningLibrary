@@ -10,7 +10,7 @@ class GitInfoController extends Controller
 {
     public function getReposInfo()
     {
-        $repos = Http::withToken('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')
+        $repos = Http::withToken('')
             ->get('https://api.github.com/user/repos')
             ->json();
 
