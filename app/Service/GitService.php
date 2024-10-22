@@ -4,7 +4,6 @@ namespace App\Service;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use Http\Client\Exception\HttpException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
