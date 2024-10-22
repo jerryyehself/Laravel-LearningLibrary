@@ -15,8 +15,7 @@ class CollectionPageController extends Controller
         return view(
             'collections',
             [
-                'works' => $this->works(),
-                // 'staticCards' => $this->staticCards()
+                'works' => $this->works()
             ]
         );
     }

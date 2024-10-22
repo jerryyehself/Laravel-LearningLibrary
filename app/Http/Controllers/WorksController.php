@@ -31,7 +31,7 @@ class WorksController extends Controller
             ],
             'content' => [
                 'target' => $this->works->all(),
-                'components' => $this->works->with('projectElements')->get(),
+                'components' => $this->works->with('LatestElements')->get(),
                 'domainlist' => $this->domain->all()
             ],
             'counter' => $this->works->count()

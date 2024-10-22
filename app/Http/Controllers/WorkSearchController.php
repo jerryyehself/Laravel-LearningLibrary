@@ -20,9 +20,10 @@ class WorkSearchController extends Controller
     private function searchByElement(Request $request)
     {
 
-        return Project::whereHas('projectElements', function ($query) use ($request) {
+        return Project::whereHas('latestElements', function ($query) use ($request) {
             $query->where('element_name', 'LIKE', "%{$request->input('searchTerm')}%");
-        })->withElementSearch()
+        })
+            ->withElementSearch()
             ->get();
     }
 
@@ -37,9 +38,9 @@ class WorkSearchController extends Controller
     {
 
         return  $works->transform(function ($work) {
-            $work->searchLabel = $work->project_name . " [" . $work->projectElements->pluck('element_name')->implode(', ') . "]";
+            $work->searchLabel = $work->project_name . " [" . $work->latestElements->pluck('element_name')->implode(', ') . "]";
             $work->searchLink = 'https://github.com/jerryyehself/' . $work->git_repository_name;
-            $work->elementTags = $work->projectElements->pluck('element_name')->implode(', ');
+            $work->elementTags = $work->latestElements->pluck('element_name')->implode(', ');
             return $work;
         });
     }

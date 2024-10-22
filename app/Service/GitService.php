@@ -10,6 +10,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Throwable;
 
+/**
+ * access to git
+ */
 class GitService
 {
 
@@ -22,12 +25,6 @@ class GitService
 
     public function getRepos()
     {
-
-        // $client = new Client();
-
-        // $client->authenticate(self::TOKEN, null, AuthMethod::ACCESS_TOKEN);
-
-        // $repos = $client->api('me')->repositories();
 
         try {
             $repos = $this->accessGit
@@ -56,16 +53,16 @@ class GitService
 
         $work = Arr::only($repo, ['html_url', 'name', 'languages_url', 'created_at', 'updated_at']);
 
-        $work['repo_updated_at'] = Carbon::parse($work['updated_at']);
-        $work['repo_created_at'] = Carbon::parse($work['created_at']);
-
-        $work['languages'] = $this->getLanguagesInfo($work['languages_url']);
-
-        $work['repo_name'] = $work['name'];
-
-        $nameTags = $this->explodeReposName($work['name']);
-
-        $work = array_merge($work, $nameTags);
+        $work = array_merge(
+            $work,
+            [
+                'repo_updated_at' => Carbon::parse($work['updated_at']),
+                'repo_created_at' => Carbon::parse($work['created_at']),
+                'languages' => $this->getLanguagesInfo($work['languages_url']),
+                'repo_name' => $work['name'],
+            ],
+            $this->explodeReposName($work['name'])
+        );
 
         return $work;
     }

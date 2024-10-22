@@ -4,9 +4,10 @@ namespace App\Service;
 
 use App\Models\Backgroundmodels\Project;
 use App\Models\Problemmodels\Language;
-use App\Models\ProjectElement;
-use Illuminate\Support\Arr;
 
+/**
+ * save git data
+ */
 class SaveReposDataService
 {
 
@@ -25,27 +26,31 @@ class SaveReposDataService
 
             $project = $this->saveReposContent($repo);
 
-            $this->saveLanguage($repo['languages']);
-            $this->saveElements($repo['tags'], $project->id);
+            collect($repo['languages'])->map(function ($lang) use ($project) {
+
+                $language = Language::firstOrCreate([
+                    'language_name' => $lang
+                ]);
+
+                $project->relations()->create([
+                    'object' => 'Project',
+                    'subject_id' => $language->id,
+                    'subject' => 'Language'
+                ]);
+            });
+
+            $elements = collect($repo['tags'])->map(function ($tag) use ($project) {
+                $project->projectElements()->create([
+                    'element_name' => $tag
+                ]);
+            });
         });
 
         return response()->json(['status' => 'success'], 201);
     }
 
-    public function saveLanguage($reposLang)
-    {
-        collect($reposLang)->map(function ($lang) {
-            Language::firstOrCreate([
-                'language_name' => $lang
-            ]);
-        });
-    }
-
-    public function saveCentralPviot() {}
-
     public function saveReposContent($repo)
     {
-        // dd($repo);
         return Project::updateOrCreate(
             [
                 'project_name' => $repo['name']
@@ -56,15 +61,5 @@ class SaveReposDataService
                 'git_repository_name' => $repo['repo_name'],
             ]
         );
-    }
-
-    public function saveElements($tags, $project_id = '')
-    {
-        foreach ($tags as $tag) {
-            ProjectElement::create([
-                'element_name' => $tag,
-                'project_id' => $project_id
-            ])->save();
-        }
     }
 }

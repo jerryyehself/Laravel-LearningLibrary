@@ -2,6 +2,7 @@
 
 namespace App\Models\Backgroundmodels;
 
+use App\Models\CentralPivot;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -74,24 +75,31 @@ class Project extends Model
     // has project elements
     public function projectElements()
     {
-        $latest = $this->hasMany(ProjectElement::class)->latest('created_at')->first();
-
-        if ($latest) {
-            $latestDate = Carbon::parse($latest->created_at)->toDateString();
-            return $this->hasMany(ProjectElement::class)
-                ->whereDate('created_at', '=', $latestDate)
-                ->select('element_name')
-                ->distinct();
-        }
-
         return $this->hasMany(ProjectElement::class);
+    }
+
+    public function latestElements()
+    {
+        $latestDate = $this->projectElements()
+            ->latest('created_at')
+            ->value('created_at');
+
+        return $this->projectElements()
+            ->whereDate('created_at', $latestDate)
+            ->select('element_name')
+            ->distinct();
     }
 
     public function scopeWithElementSearch($query)
     {
-        return $query->with(['projectElements' => function ($query) {
+        return $query->with(['latestElements' => function ($query) {
             $query->select('project_id', 'element_name')->distinct();
         }])
             ->select('project_name', 'id', 'git_repository_name');
+    }
+
+    public function relations()
+    {
+        return $this->hasMany(CentralPivot::class, 'object_id');
     }
 }

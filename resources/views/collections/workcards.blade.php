@@ -16,7 +16,7 @@
 
             </div>
             <div class="tags">
-                @foreach($work->projectElements as $tag)
+                @foreach($work->latestElements as $tag)
                 <div class="badge rounded-pill bg-secondary">
                     {{ $tag->element_name }}
                 </div>
