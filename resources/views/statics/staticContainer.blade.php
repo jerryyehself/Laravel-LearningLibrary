@@ -8,13 +8,14 @@
                 <button
                     id="{{ $cardType }}-tab"
                     type="button"
-                    class="nav-link {{ $cardType != $staticCards['defaultSelected'] ?: 'active' }} static-chart-bar"
+                    class="nav-link {{ $cardType != $staticCards['defaultSelected'] ?: 'active' }} static-chart-bar {{ $card['tab']['display'] ?: 'disabled' }}"
                     data-bs-toggle="tab"
                     data-bs-target="#nav-{{ $cardType }}"
                     data-static-type="{{ $cardType }}"
                     role="tab"
                     aria-controls="nav-{{ $cardType }}"
-                    aria-selected="{{ $cardType == $staticCards['defaultSelected'] ? 'true' : 'false' }}">
+                    aria-selected="{{ $cardType == $staticCards['defaultSelected'] ? 'true' : 'false' }}"
+                    aria-disabled="{{ $card['tab']['display'] ?: 'disabled' }}">
 
                     {{ $card['tab']['label'] }}
                 </button>

@@ -20,10 +20,5 @@ class ProjectElement extends Model
     public function projects()
     {
         return $this->belongsTo(Project::class, 'project_id', 'id');
-        // ->select(
-        //     'id',
-        //     'project_name',
-        //     'git_repository_name'
-        // );
     }
 }

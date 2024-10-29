@@ -43,7 +43,7 @@ class updateReposInfo extends Command
         $saveGitService->saveReposData();
 
         Log::info('update repos data success');
-        echo 'Git Repos info updated';
+        echo 'Git Repos info updated ';
         return 0;
     }
 }

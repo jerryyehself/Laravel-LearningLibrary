@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Backgroundmodels\Project;
+use App\Models\Problemmodels\Language;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,9 +15,17 @@ class CentralPivot extends Model
     protected $table = 'central_pivot';
 
     protected $fillable = [
-        'subject',
+        'subject_type',
         'subject_id',
-        'object',
+        'object_type',
         'object_id',
     ];
+
+    public function languages()
+    {
+        return $this->hasMany(Language::class, 'id', 'object_id')
+            ->whereHas('relations', function ($query) {
+                $query->where('object', 'Language');
+            });
+    }
 }

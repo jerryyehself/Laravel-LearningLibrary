@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Backgroundmodels\Project;
+use App\Models\Problemmodels\Language;
 use App\Models\ProjectElement;
 use Beste\Json;
 use Illuminate\Http\Request;
@@ -26,8 +27,37 @@ class ChartsDataController extends Controller
             ->toArray();
     }
 
+    public function getLatestLanguageData()
+    {
+        return Language::with('hasInstanceProjects')
+            ->get()
+            ->transform(function ($language) {
+                return $language->setRelation('hasInstanceProjects', collect([
+                    'count' => $language->hasInstanceProjects->count(),
+                    'projects' => $language->hasInstanceProjects->map(function ($project) {
+                        return $project->only('id', 'project_name', 'git_repository_name');
+                    })
+                ]));
+            });
+    }
+
     public function setChart(Request $request)
     {
+
+        switch ($request->get('chartType')) {
+            case 'type':
+                $data = $this->getLatestElementData($request);
+                $parsing = [];
+                break;
+            case 'language':
+                $data = $this->getLatestLanguageData();
+                $parsing = [
+                    'xAxisKey' => 'language_name',
+                    'yAxisKey' => 'has_instance_projects.count'
+                ];
+
+                break;
+        }
 
         return response(
             [
@@ -36,7 +66,7 @@ class ChartsDataController extends Controller
                     'datasets' => [
                         [
                             'label' => self::CHART_LABEL,
-                            'data' => $this->getLatestElementData($request),
+                            'data' => $data,
                             'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
                             'borderColor' => 'rgb(54, 162, 235)',
                             'borderWidth' => '1'
@@ -63,7 +93,8 @@ class ChartsDataController extends Controller
                         'tooltip' => [
                             'enabled' => true
                         ]
-                    ]
+                    ],
+                    'parsing' => $parsing
                 ]
             ]
         );

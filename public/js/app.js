@@ -265,6 +265,7 @@ function _gitChartsData() {
             fetch(apiurl, config).then(function (response) {
               return response.json();
             }).then(function (data) {
+              if (chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart.getChart($('canvas[data-static-type="' + chartType + '"]'))) chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart.getChart($('canvas[data-static-type="' + chartType + '"]')).destroy();
               new chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart($('canvas[data-static-type="' + chartType + '"]'), data);
             })["catch"](function (error) {
               console.error('Fetch error:', error);
@@ -281,12 +282,16 @@ function _gitChartsData() {
 }
 
 $(function () {
-  $('.static-chart-container > canvas').map(function () {
-    gitChartsData($(this).data('static-type'));
+  $('.static-chart-bar').not('.disabled').map(function (key, item) {
+    var bar = $(this).data('static-type');
+    gitChartsData(bar);
   });
-  $('.static-chart-bar').on('click', function () {
-    gitChartsData($(this).data('static-type'));
-  });
+  setInterval(function () {
+    $('.static-chart-bar').not('.disabled').map(function (key, item) {
+      var bar = $(this).data('static-type');
+      gitChartsData(bar);
+    });
+  }, 60000);
 });
 
 /***/ }),

@@ -24,6 +24,9 @@ export default async function gitChartsData(chartType = 'type') {
             return response.json()
         })
         .then(function (data) {
+
+            if (Chart.getChart($('canvas[data-static-type="' + chartType + '"]')))
+                Chart.getChart($('canvas[data-static-type="' + chartType + '"]')).destroy()
             new Chart($('canvas[data-static-type="' + chartType + '"]'), data);
         })
         .catch(function (error) {
@@ -32,17 +35,16 @@ export default async function gitChartsData(chartType = 'type') {
 }
 
 $(function () {
-
-    $('.static-chart-container > canvas').map(function () {
-        gitChartsData($(this).data('static-type'))
+    $('.static-chart-bar').not('.disabled').map(function (key, item) {
+        var bar = $(this).data('static-type')
+        gitChartsData(bar)
     })
 
-    $('.static-chart-bar').on('click', function () {
+    setInterval(function () {
+        $('.static-chart-bar').not('.disabled').map(function (key, item) {
+            var bar = $(this).data('static-type')
+            gitChartsData(bar)
+        })
+    }, 60000)
 
-        gitChartsData($(this).data('static-type'))
-    })
 })
-
-
-
-

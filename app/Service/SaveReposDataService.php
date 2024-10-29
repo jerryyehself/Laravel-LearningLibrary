@@ -28,18 +28,21 @@ class SaveReposDataService
 
             collect($repo['languages'])->map(function ($lang) use ($project) {
 
-                $language = Language::firstOrCreate([
+                $language = Language::updateOrCreate([
                     'language_name' => $lang
                 ]);
 
-                $project->relations()->create([
-                    'object' => 'Project',
-                    'subject_id' => $language->id,
-                    'subject' => 'Language'
-                ]);
+                $language->touch();
+
+                $language->hasInstanceProjects()
+                    ->attach($project->id, [
+                        'object_type' => Language::class,
+                        'subject_type' => Project::class,
+                    ]);
             });
 
-            $elements = collect($repo['tags'])->map(function ($tag) use ($project) {
+            collect($repo['tags'])->map(function ($tag) use ($project) {
+
                 $project->projectElements()->create([
                     'element_name' => $tag
                 ]);

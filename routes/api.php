@@ -12,6 +12,7 @@ use App\Http\Controllers\WorkSearchController;
 use App\Http\Resources\DomainResource;
 use App\Models\Backgroundmodels\Project;
 use App\Models\Backgroundmodels\Sourcedomain;
+use App\Models\Problemmodels\Language;
 use App\Models\ProjectElement;
 use App\Notifications\GitUpdateStatus;
 use App\Notify\GitNotifiable;
@@ -45,7 +46,7 @@ Route::post(
 );
 Route::post(
     'gitChartsDataa',
-    [ChartsDataController::class, 'setChart']
+    [ChartsDataController::class, 'getLatestLanguageData']
 );
 Route::get('graphQLtest', function () {
     // $test = new Project;

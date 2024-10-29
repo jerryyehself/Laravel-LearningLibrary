@@ -63,7 +63,23 @@ class Project extends Model
     // using languages
     public function languages()
     {
-        return $this->morphToMany(Language::class, 'languageusage');
+        return $this->morphedByMany(Language::class, 'object', 'central_pivot', 'object_id', 'subject_id');
+        // return $this->hasManyThrough(
+        //     Project::class,
+        //     CentralPivot::class,
+        //     'object_id',
+        //     'id',
+        //     'id',
+        //     'subject_id'
+        // )
+        //     ->where(
+        //         'central_pivot.subject',
+        //         'Project'
+        //     )
+        //     ->where(
+        //         'central_pivot.object',
+        //         'Language'
+        //     );
     }
 
     // has resources

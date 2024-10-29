@@ -45,10 +45,10 @@ class StaticPageController extends Controller
                 'referenece' => [
                     'tab' => [
                         'label' => '來源網站',
-                        'display' => true,
+                        'display' => false,
                     ],
                     'content' => [
-                        'display' => '',
+                        'display' => false,
                         'staticCharts'
                     ]
                 ]
