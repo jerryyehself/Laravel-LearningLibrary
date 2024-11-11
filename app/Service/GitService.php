@@ -40,7 +40,7 @@ class GitService
 
         $data = collect($repos)->where('private', false)
             ->map(function ($repo) {
-                if ($repo['name'] != 'jerryyehself') return $this->cleanRepoInfo($repo);
+                return $this->cleanRepoInfo($repo);
             })
             ->filter();
 
@@ -50,36 +50,20 @@ class GitService
     private function cleanRepoInfo($repo = null)
     {
 
-        $work = Arr::only($repo, ['html_url', 'name', 'languages_url', 'created_at', 'updated_at']);
+        $work = Arr::only($repo, ['id', 'html_url', 'name', 'languages_url', 'created_at', 'updated_at', 'topics']);
 
         $work = array_merge(
             $work,
             [
+                'git_repository_id' => $work['id'],
                 'repo_updated_at' => Carbon::parse($work['updated_at']),
                 'repo_created_at' => Carbon::parse($work['created_at']),
                 'languages' => $this->getLanguagesInfo($work['languages_url']),
-                'repo_name' => $work['name'],
-            ],
-            $this->explodeReposName($work['name'])
+                'project_name' => $work['name'],
+            ]
         );
 
         return $work;
-    }
-
-    private function explodeReposName($name = '')
-    {
-        $allTags = explode('-', $name);
-
-        $realName = Arr::last($allTags);
-
-        $tags = array_filter($allTags, function ($tag) use ($realName) {
-            return $tag !== $realName;
-        });
-
-        return [
-            'name' => $realName,
-            'tags' => $tags
-        ];
     }
 
     private function getLanguagesInfo($repoLangUrl)

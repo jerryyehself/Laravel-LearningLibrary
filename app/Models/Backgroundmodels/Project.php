@@ -3,6 +3,7 @@
 namespace App\Models\Backgroundmodels;
 
 use App\Models\CentralPivot;
+use App\Models\Images;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,12 +23,13 @@ class Project extends Model
 
     protected $fillable = [
         'project_name',
+        'project_name_cn',
         'project_version',
         'project_description',
         'git_repository_id',
-        'git_repository_name',
         'maintained',
         'still_maintain',
+        'display_status',
         'release_url',
         'release_domain_id',
         'repo_created_at',
@@ -61,25 +63,28 @@ class Project extends Model
     }
 
     // using languages
-    public function languages()
+    public function Usinglanguages()
     {
-        return $this->morphedByMany(Language::class, 'object', 'central_pivot', 'object_id', 'subject_id');
-        // return $this->hasManyThrough(
-        //     Project::class,
-        //     CentralPivot::class,
-        //     'object_id',
-        //     'id',
-        //     'id',
-        //     'subject_id'
-        // )
-        //     ->where(
-        //         'central_pivot.subject',
-        //         'Project'
-        //     )
-        //     ->where(
-        //         'central_pivot.object',
-        //         'Language'
-        //     );
+        return $this->morphedByMany(
+            Language::class,
+            'object',
+            'central_pivot',
+            'object_id',
+            'subject_id'
+        )
+            ->withTimestamps();
+    }
+
+    public function hasImg()
+    {
+        return $this->morphedByMany(
+            Images::class,
+            'object',
+            'central_pivot',
+            'object_id',
+            'subject_id'
+        )
+            ->withTimestamps();
     }
 
     // has resources
@@ -106,12 +111,13 @@ class Project extends Model
             ->distinct();
     }
 
+    //查詢資源
     public function scopeWithElementSearch($query)
     {
         return $query->with(['latestElements' => function ($query) {
             $query->select('project_id', 'element_name')->distinct();
         }])
-            ->select('project_name', 'id', 'git_repository_name');
+            ->select('project_name', 'id');
     }
 
     public function relations()

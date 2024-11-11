@@ -1,9 +1,9 @@
 <div class="col">
     <div class="card" style="min-width:20vw;">
-        <!-- <img src="..." class="card-img-top" alt="..."> -->
+        {{-- <img src="..." class="card-img-top" alt="..."> --}}
         <div class="card-body">
             <h5 class="card-title">
-                <a href="https://github.com/jerryyehself/{{ $work->git_repository_name }}" class="text-decoration-none">
+                <a href="https://github.com/jerryyehself/{{ $work->project_name }}" class="text-decoration-none">
                     {{ $work->project_name }}
                 </a>
             </h5>
@@ -16,10 +16,8 @@
 
             </div>
             <div class="tags">
-                @foreach($work->latestElements as $tag)
-                <div class="badge rounded-pill bg-secondary">
-                    {{ $tag->element_name }}
-                </div>
+                @foreach ($work->latestElements as $tag)
+                    <x-element-tags :tag="$tag->element_name" />
                 @endforeach
             </div>
             <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->

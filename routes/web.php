@@ -54,7 +54,6 @@ Route::prefix('statics')->group(function () {
 });
 
 Route::prefix('setting')->group(function () {
-
     Route::resources([
         '/sourcesites' => SourceDomainController::class,
         '/works' => WorksController::class,
@@ -64,10 +63,22 @@ Route::prefix('setting')->group(function () {
         '/practiceType_frameworks' => FrameworksController::class,
         '/documents' => DocumentController::class
     ]);
+
+    // Route::post([
+    //     '/sourcesites' => SourceDomainController::class,
+    //     '/works' => WorksController::class,
+    //     '/practiceType_languages' => LanguagesController::class,
+    //     '/practiceType_packagetools' => PackagetoolsController::class,
+    //     '/practiceType_environments' => EnvironmentsController::class,
+    //     '/practiceType_frameworks' => FrameworksController::class,
+    //     '/documents' => DocumentController::class
+    // ]);
 });
 
 Route::get('test', [GitInfoController::class, 'GetRepos']);
-
+Route::get('test1', function () {
+    return view('test');
+});
 
 // Route::post('/setting/domain', [DomainController::class, 'store']);
 // Route::prefix('collection')->group(function () {

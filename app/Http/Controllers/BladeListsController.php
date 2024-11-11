@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-class NavListsController extends Controller
+class BladeListsController extends Controller
 {
 
     public static function getListItem($item = '')
@@ -75,5 +75,23 @@ class NavListsController extends Controller
                     ]
                 ]
             ];
+    }
+
+    public static function footerLinks()
+    {
+        return [
+            'github' => [
+                'icon' => 'github',
+                'url' => 'https://github.com/jerryyehself'
+            ],
+            'instagram' => [
+                'icon' => 'instagram',
+                'url' => 'https://www.instagram.com/jerry29_new_life/'
+            ],
+            'gmail' => [
+                'icon' => 'envelope',
+                'url' => 'mailto:jerry40522@gmail.com'
+            ],
+        ];
     }
 }

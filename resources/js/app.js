@@ -2,6 +2,7 @@
 import urlProccessor from './urlProccessor';
 import fetchGitInfos from './fetchGitInfos';
 import fetchChartsData from './fetchChartsData';
+import settingDisplayChange from './settingDisplayChange';
 
 
 $(document).ready(function () {
@@ -9,10 +10,6 @@ $(document).ready(function () {
     const search = document.querySelector('#search')
     const typeInput = document.querySelector('#resource')
     const date = new Date()
-    // console.log(searchHistoryItem)
-    // search.addEventListener('click', () => {
-    //     urlProccessor();
-    // })
 
     $('#resource').on('input', function () {
 
@@ -22,34 +19,52 @@ $(document).ready(function () {
                 let data = await fetchGitInfos(request.term)
 
                 response($.map(data, function (item) {
+                    // item.elementTags.forEach()
                     return {
                         name: item.project_name,
-                        label: item.searchLabel,
+                        // label: item.searchLabel + item.elementTags.map(function (tag, i) {
+                        //     return tag
+                        // }),
                         url: item.searchLink,
-                        elementTags: item.elementTags,
-                        id: item.id
+                        autoCompleteItem: item.autoCompleteItem,
+                        id: item.id,
+                        row: item.row
                     };
                 }));
             },
+            _renderItem: function (ul, item) {
+                console.log('aa')
+                const li = $('<li>')
+                    .addClass('list-group-item')
+                    .append(`<strong>${item.label}</strong>`);
+
+                // 在這裡添加 badges
+                item.badges.forEach(function (tag) {
+                    li.append(`<span class="badge bg-primary">${tag}</span> `); // 使用 HTML 來顯示 badge
+                });
+
+                return li.appendTo(ul);
+            },
             select: function (event, ui) {
-                // window.open(ui.item.url)
-                let searchHistoryItem = $('.history-item-sample').clone(true)
 
-                // if (!$('#' + ui.item.id).length) {
+                var list = $('#search_history_list tbody')
 
-                searchHistoryItem.attr('id', ui.item.id)
-                $('.work-name a', searchHistoryItem).attr('href', ui.item.url)
-                $('.work-name a', searchHistoryItem).text(ui.item.name)
-                $('.work-elements', searchHistoryItem).text(ui.item.elementTags)
-                $('.history-item-time', searchHistoryItem).text(date.toLocaleString())
-                // }
-
-                searchHistoryItem.removeClass(['d-none', 'history-item-sample'])
-
-                $('#search_history_list tbody').append(searchHistoryItem);
+                var row = $(ui.item.row);
+                $('', row)
+                list.append($(ui.item.row));
             }
-        });
+        }).autocomplete("instance")._renderItem = function (ul, item) {
+            return $(item.autoCompleteItem).appendTo(ul);
+        };;
 
+    })
+
+    $('[name="cancelBtn"]').on('click', function () {
+
+    })
+
+    $('[name="submitBtn"]').on('click', function () {
+        if (confirm('確認送出嗎')) $('#main').submit()
     })
 
     // console.log(event.target)

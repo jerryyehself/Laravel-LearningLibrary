@@ -38,7 +38,8 @@ class Language extends Model
             'central_pivot',
             'subject_id',
             'object_id'
-        );
+        )
+            ->withTimestamps();
     }
 
     // has resources

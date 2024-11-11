@@ -36,6 +36,7 @@ body {
     max-height: 100%;
     width: 100%;
     overflow-y: auto;
+
 }
 
 #search_history thead th {
@@ -78,6 +79,13 @@ main::-webkit-scrollbar {
     height: 50vw;
 }
 
+.icon-link {
+    text-decoration: none;
+    /* 移除底線 */
+    color: white;
+    /* 設定圖標顏色 */
+}
+
 /* 
 .autocomplete-items {
     border: 1px solid #d4d4d4;
@@ -96,4 +104,17 @@ main::-webkit-scrollbar {
 
 .autocomplete-item:hover {
     background-color: #e9ecef;
+} */
+
+/* :root {
+    --primary-100: #8B5D33;
+    --primary-200: #be8a5e;
+    --primary-300: #ffedbc;
+    --accent-100: #BFBFBF;
+    --accent-200: #616161;
+    --text-100: #333333;
+    --text-200: #5c5c5c;
+    --bg-100: #E5E5E5;
+    --bg-200: #dbdbdb;
+    --bg-300: #b3b3b3;
 } */

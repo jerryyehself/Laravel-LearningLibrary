@@ -19,11 +19,12 @@ use App\Notify\GitNotifiable;
 use App\Service\SaveReposDataService;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Rebing\GraphQL\GraphQL as GraphQLGraphQL;
 use Rebing\GraphQL\Support\Facades\GraphQL;
-
+use Illuminate\Support\Str;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -47,6 +48,16 @@ Route::post(
 Route::post(
     'gitChartsDataa',
     [ChartsDataController::class, 'getLatestLanguageData']
+);
+// dd();
+Route::put(
+    'changeEntityDisplay',
+    function (Request $request) {
+        return redirect()->route(
+            "{$request->entity}.update",
+            [Str::singular($request->entity) => $request->id]
+        );
+    }
 );
 Route::get('graphQLtest', function () {
     // $test = new Project;
@@ -130,6 +141,13 @@ Route::get(
         $noitfy = new GitNotifiable;
         $noitfy->notify(new GitUpdateStatus());
         return response('send success');
+    }
+);
+
+Route::get(
+    'test',
+    function () {
+        return Project::with('UsingLanguages')->find(1);
     }
 );
 

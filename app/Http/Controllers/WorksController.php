@@ -2,14 +2,121 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProjectPostRequest;
 use App\Models\Backgroundmodels\Project;
 use App\Models\Backgroundmodels\Sourcedomain;
+use App\View\Components\setting\SettingTargetList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class WorksController extends Controller
 {
 
     public $works, $domain;
+
+    private $fieldSetting = [
+        'id' => [
+            'title' => 'id',
+            'editable' => false,
+            'type' => null,
+            'display' => [
+                'setting_list' => true,
+                'edit' => false,
+                'collect' => false
+            ]
+        ],
+        'project_name' => [
+            'title' => '作品',
+            'editable' => false,
+            'type' => 'label',
+            'display' => [
+                'setting_list' => true,
+                'edit' => false,
+                'collect' => true
+            ]
+        ],
+        'project_name_cn' => [
+            'title' => '中文名稱',
+            'editable' => true,
+            'type' => 'text',
+            'display' => [
+                'setting_list' => true,
+                'edit' => true,
+                'collect' => false
+            ]
+        ],
+        'release_url' => [
+            'title' => '實作頁面',
+            'editable' => true,
+            'type' => 'text',
+            'display' => [
+                'setting_list' => false,
+                'edit' => true,
+                'collect' => false
+            ]
+        ],
+        // 'git_repository_name' => [
+        //     'title' => 'git儲存庫名稱',
+        //     'editable' => false,
+        //     'type' => 'text',
+        //     'display' => [
+        //         'setting_list' => true,
+        //         'edit' => false,
+        //         'collect' => false
+        //     ]
+        // ],
+        'still_maintain' => [
+            'title' => '維護',
+            'editable' => false,
+            'type' => 'switch',
+            'display' => [
+                'setting_list' => true,
+                'edit' => true,
+                'collect' => false
+            ]
+        ],
+        'display_status' => [
+            'title' => '顯示',
+            'editable' => true,
+            'type' => 'switch',
+            'display' => [
+                'setting_list' => true,
+                'edit' => true,
+                'collect' => false
+            ]
+        ],
+        'project_description' => [
+            'title' => '作品說明',
+            'editable' => true,
+            'type' => 'textarea',
+            'display' => [
+                'setting_list' => false,
+                'edit' => true,
+                'collect' => false
+            ]
+        ],
+        'imgs' => [
+            'title' => '示意圖',
+            'editable' => true,
+            'type' => 'img',
+            'display' => [
+                'setting_list' => false,
+                'edit' => true,
+                'collect' => true
+            ]
+        ],
+        'UsingLanguages' => [
+            'title' => '標籤',
+            'editable' => true,
+            'type' => 'tag',
+            'display' => [
+                'setting_list' => false,
+                'edit' => true,
+                'collect' => true
+            ]
+        ]
+    ];
+
     public function __construct()
     {
         $this->works = new Project;
@@ -23,21 +130,28 @@ class WorksController extends Controller
     public function index()
     {
 
-        $view = [
-            'title' => [
-                '作品',
-                '實作類型',
-                '詳細資料'
-            ],
-            'content' => [
-                'target' => $this->works->all(),
-                'components' => $this->works->with('LatestElements')->get(),
-                'domainlist' => $this->domain->all()
-            ],
-            'counter' => $this->works->count()
-        ];
-
-        return view('setting', ['collection' => $view]);
+        return view(
+            'setting',
+            [
+                'collection' =>
+                [
+                    'title' => [
+                        '作品',
+                        '中文名稱',
+                        '實作類型',
+                        '詳細資料',
+                        '對外顯示'
+                    ],
+                    'content' => $this->works->paginate(10),
+                    // [
+                    //     'target' => $this->works->all(),
+                    //     // 'components' => $this->works->all(),
+                    //     // 'domainlist' => $this->domain->all()
+                    // ],
+                    // 'counter' => $this->works->count()
+                ]
+            ]
+        );
     }
 
     /**
@@ -58,7 +172,7 @@ class WorksController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd('aa');
     }
 
     /**
@@ -67,7 +181,42 @@ class WorksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {}
+    public function show($id)
+    {
+        $setting_route = SettingTargetList::getSettingList();
+
+        $instance = $this->works::with('hasImg')->find($id);
+        $sections = [];
+
+        collect($this->fieldSetting)->where(
+            'display.edit',
+            true
+        )->map(function ($settings, $field) use (&$sections) {
+            switch ($settings['type']) {
+                case 'switch':
+                    $sections[$settings['type']]['title'] = '狀態';
+                    $sections[$settings['type']]['fields'][$field] = $settings;
+                    break;
+                case 'textarea':
+                    $sections['attr']['title'] = '屬性';
+                    $sections[$settings['type']]['fields'][$field] = $settings;
+                    break;
+                case 'img':
+                    $sections[$settings['type']]['title'] = '示意圖';
+                    $sections[$settings['type']]['fields'][$field] = $settings;
+                    break;
+                case 'tag':
+                    $sections[$settings['type']]['title'] = '標籤';
+                    $sections[$settings['type']]['fields'][$field] = $settings;
+                    break;
+                default:
+                    $sections['attr']['title'] = '屬性';
+                    $sections['attr']['fields'][$field] = $settings;
+                    break;
+            }
+        });
+        return view('setting.crud.modify', compact('instance', 'sections', 'setting_route'));
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -77,6 +226,7 @@ class WorksController extends Controller
      */
     public function edit($id)
     {
+
         // $editor =  $this->works->find($id);
         // $view = [
         //     'page' => 'works/' . $id,
@@ -109,24 +259,30 @@ class WorksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    // public function update(Request $request, $id)
+    public function update(ProjectPostRequest $request, $id)
     {
-        $work =  $this->works->find($id);
 
-        if ($work->project_name != $request->projectTitleModify) {
-            $work->project_name = $request->projectTitleModify;
-            $work->save();
-            return redirect('setting/works')->with('actionmessage', [
+        if (isset($request->display))
+            return $this->updateDisplayStatus($request, $id);
+
+        $request->validated();
+
+        $modify = $request->all();
+
+        $modify['still_maintain'] = $request->has('still_maintain');
+        $modify['display_status'] = $request->has('display_status');
+
+        $work = $this->works->find($id)
+            ->fill($modify)
+            ->save();
+
+        return redirect('setting/works')
+            ->with('actionmessage', [
                 'main' => '修改成功',
-                'status' => 'success'
+                'status' => 'success',
+                'data' => $work
             ]);
-        }
-
-
-        return redirect('setting/works')->with('actionmessage', [
-            'main' => '未修改任何資料',
-            'status' => ''
-        ]);
     }
 
     /**
@@ -142,6 +298,17 @@ class WorksController extends Controller
         return redirect('collections/works')->with('actionmessage', [
             'main' => '刪除成功',
             'status' => 'deleted'
+        ]);
+    }
+
+    public function updateDisplayStatus($request, $id)
+    {
+        Project::find($id)
+            ->update(['display_status' => ($request->display) ? 1 : 0]);
+
+        return response()->json([
+            'status' => 'update display success',
+            'data' => Project::find($id)
         ]);
     }
 }

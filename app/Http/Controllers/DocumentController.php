@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class DocumentController extends Controller
 {
+    public $document;
     public function __construct()
     {
         $this->document = new Officialdocument;
@@ -25,9 +26,7 @@ class DocumentController extends Controller
                 '官方文件',
                 '文件語言'
             ],
-            'content' => [
-                'target' => $this->document->all()
-            ],
+            'content' =>  $this->document->paginate(10),
             'counter' => $this->document->count()
         ];
 

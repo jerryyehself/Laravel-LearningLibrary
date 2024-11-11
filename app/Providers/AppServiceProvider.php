@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\NavListsController;
+use App\Http\Controllers\BladeListsController;
 use App\Http\Controllers\SettingPageController;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,6 +17,7 @@ use App\Models\Problemmodels\Packagetool;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Resourcemodels\Resource;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
@@ -48,14 +49,6 @@ class AppServiceProvider extends ServiceProvider
             $query->time;
         });
 
-        //nav bar
-        View::composer('models.header', function ($view) {
-            $view->with('navBar', NavListsController::getListItem('navBar'));
-        });
-
-        // setting list
-        View::composer('setting.list', function ($view) {
-            $view->with('settingList', NavListsController::getListItem('settingList'));
-        });
+        Paginator::useBootstrap();
     }
 }

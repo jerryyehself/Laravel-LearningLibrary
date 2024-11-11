@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Backgroundmodels\Project;
-use App\Service\GitService;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class CollectionPageController extends Controller
 {
@@ -22,11 +20,16 @@ class CollectionPageController extends Controller
 
     public function works()
     {
-        return Project::all()->map(function ($work) {
+        $works = Project::where('display_status', 1)
+            ->Paginate(8);
+
+        $works->getCollection()->transform(function ($work) {
             $work['repo_created_at'] = Carbon::parse($work['repo_created_at'])->format('Y-m-d');
             $work['repo_updated_at'] = Carbon::parse($work['repo_updated_at'])->format('Y-m-d');
             return $work;
         });
+
+        return $works;
     }
 
     public function language()

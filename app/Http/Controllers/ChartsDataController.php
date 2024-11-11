@@ -20,11 +20,22 @@ class ChartsDataController extends Controller
             ->distinct()
             ->get()
             ->groupBy('element_name')
-            ->map(function ($element) {
-                return $element->count();
+            ->transform(function ($element, $element_name) {
+                return [
+                    'count' => $element->count(),
+                    'element' => $element_name
+                ];
             })
-            ->sortDesc()
-            ->toArray();
+            ->sortBy([
+                ['count', 'desc'],
+                ['element', 'asc']
+            ])
+            ->values();
+        // ->map(function ($element) {
+        //     return $element->count();
+        // })
+        // ->sortDesc()
+        // ->toArray();
     }
 
     public function getLatestLanguageData()
@@ -38,7 +49,12 @@ class ChartsDataController extends Controller
                         return $project->only('id', 'project_name', 'git_repository_name');
                     })
                 ]));
-            });
+            })
+            ->sortBy([
+                ['hasInstanceProjects.count', 'desc'],
+                ['language_name', 'asc']
+            ])
+            ->values();
     }
 
     public function setChart(Request $request)
@@ -47,7 +63,10 @@ class ChartsDataController extends Controller
         switch ($request->get('chartType')) {
             case 'type':
                 $data = $this->getLatestElementData($request);
-                $parsing = [];
+                $parsing = [
+                    'xAxisKey' => 'element',
+                    'yAxisKey' => 'count'
+                ];
                 break;
             case 'language':
                 $data = $this->getLatestLanguageData();
@@ -55,7 +74,6 @@ class ChartsDataController extends Controller
                     'xAxisKey' => 'language_name',
                     'yAxisKey' => 'has_instance_projects.count'
                 ];
-
                 break;
         }
 
@@ -94,7 +112,8 @@ class ChartsDataController extends Controller
                             'enabled' => true
                         ]
                     ],
-                    'parsing' => $parsing
+                    'parsing' => $parsing,
+                    'animation' => false
                 ]
             ]
         );

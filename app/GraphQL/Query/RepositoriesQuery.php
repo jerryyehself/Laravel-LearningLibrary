@@ -27,6 +27,11 @@ class ReposQuery extends Query
                 'type' => Type::int(),
                 'defaultValue' => 100,
             ],
+            // 'limit' => [
+            //     'name' => 'limit',
+            //     'type' => Type::int(),
+            //     'defaultValue' => 100,
+            // ],
         ];
     }
 

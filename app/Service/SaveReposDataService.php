@@ -34,14 +34,21 @@ class SaveReposDataService
 
                 $language->touch();
 
-                $language->hasInstanceProjects()
-                    ->attach($project->id, [
+                $language->hasInstanceProjects()->syncWithoutDetaching([
+                    $project->id => [
                         'object_type' => Language::class,
                         'subject_type' => Project::class,
-                    ]);
+                    ]
+                ]);
+
+                // $language->hasInstanceProjects()
+                //     ->attach($project->id, [
+                //         'object_type' => Language::class,
+                //         'subject_type' => Project::class,
+                //     ]);
             });
 
-            collect($repo['tags'])->map(function ($tag) use ($project) {
+            collect($repo['topics'])->map(function ($tag) use ($project) {
 
                 $project->projectElements()->create([
                     'element_name' => $tag
@@ -56,12 +63,12 @@ class SaveReposDataService
     {
         return Project::updateOrCreate(
             [
-                'project_name' => $repo['name']
+                'git_repository_id' => $repo['id']
             ],
             [
                 'repo_created_at' => $repo['repo_created_at'],
                 'repo_updated_at' => $repo['repo_updated_at'],
-                'git_repository_name' => $repo['repo_name'],
+                'project_name' => $repo['name'],
             ]
         );
     }
