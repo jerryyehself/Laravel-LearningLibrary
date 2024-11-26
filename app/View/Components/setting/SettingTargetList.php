@@ -60,6 +60,16 @@ class SettingTargetList extends Component
     public static function getSettingList()
     {
         $list = new self;
-        return $list->settingList[Request::segment(2)]['label'];
+        $targets = explode('_', Request::segment(2));
+        $targetPage = (count($targets) > 1) ? $list->settingList[$targets[0]]['sub'][$targets[1]] : $list->settingList[$targets[0]];
+        return $targetPage['label'];
+    }
+
+    public static function getProblemModels()
+    {
+        $list = new self;
+        $problemModels = $list->settingList['practiceType']['sub'];
+
+        return $problemModels;
     }
 }

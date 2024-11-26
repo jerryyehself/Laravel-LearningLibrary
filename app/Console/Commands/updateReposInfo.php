@@ -40,10 +40,10 @@ class updateReposInfo extends Command
     public function handle()
     {
         $saveGitService = new SaveReposDataService;
-        $saveGitService->saveReposData();
+        // $saveGitService->saveReposData();
 
         Log::info('update repos data success');
-        echo 'Git Repos info updated ';
+        $this->info('Git Repos info updated'); // 使用 info() 顯示終端機訊息
         return 0;
     }
 }

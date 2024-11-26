@@ -49,6 +49,8 @@ class AppServiceProvider extends ServiceProvider
             $query->time;
         });
 
+        // View::share();
+
         Paginator::useBootstrap();
     }
 }

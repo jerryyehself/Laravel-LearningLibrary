@@ -53,7 +53,10 @@ Route::prefix('statics')->group(function () {
     Route::get('/', [StaticPageController::class, 'index'])->name('statics');
 });
 
+Route::redirect('/setting', '/setting/works');
+
 Route::prefix('setting')->group(function () {
+
     Route::resources([
         '/sourcesites' => SourceDomainController::class,
         '/works' => WorksController::class,

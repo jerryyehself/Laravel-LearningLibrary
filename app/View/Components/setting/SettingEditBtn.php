@@ -6,15 +6,16 @@ use Illuminate\View\Component;
 
 class SettingEditBtn extends Component
 {
-    public $id;
+    public $id, $editType;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($id)
+    public function __construct($id, $editType = '')
     {
         $this->id = $id;
+        $this->editType = $editType;
     }
 
     /**

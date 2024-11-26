@@ -27,7 +27,7 @@ class Navbar extends Component
         ],
         'setting' => [
             'label' => '相關設定',
-            'url' => 'setting/sourcesites/',
+            'url' => 'setting/',
             'route' => 'sourcesites.*'
         ]
     ];

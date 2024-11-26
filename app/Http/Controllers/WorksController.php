@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectPostRequest;
+use App\Http\Resources\InstanceResource;
 use App\Models\Backgroundmodels\Project;
 use App\Models\Backgroundmodels\Sourcedomain;
+use App\Models\Images;
 use App\View\Components\setting\SettingTargetList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class WorksController extends Controller
 {
@@ -23,7 +27,8 @@ class WorksController extends Controller
                 'setting_list' => true,
                 'edit' => false,
                 'collect' => false
-            ]
+            ],
+            'required' => true
         ],
         'project_name' => [
             'title' => '作品',
@@ -33,7 +38,8 @@ class WorksController extends Controller
                 'setting_list' => true,
                 'edit' => false,
                 'collect' => true
-            ]
+            ],
+            'required' => true
         ],
         'project_name_cn' => [
             'title' => '中文名稱',
@@ -43,17 +49,19 @@ class WorksController extends Controller
                 'setting_list' => true,
                 'edit' => true,
                 'collect' => false
-            ]
+            ],
+            'required' => true
         ],
         'release_url' => [
             'title' => '實作頁面',
             'editable' => true,
-            'type' => 'text',
+            'type' => 'url',
             'display' => [
                 'setting_list' => false,
                 'edit' => true,
                 'collect' => false
-            ]
+            ],
+            'required' => false
         ],
         // 'git_repository_name' => [
         //     'title' => 'git儲存庫名稱',
@@ -73,7 +81,8 @@ class WorksController extends Controller
                 'setting_list' => true,
                 'edit' => true,
                 'collect' => false
-            ]
+            ],
+            'required' => false
         ],
         'display_status' => [
             'title' => '顯示',
@@ -83,7 +92,8 @@ class WorksController extends Controller
                 'setting_list' => true,
                 'edit' => true,
                 'collect' => false
-            ]
+            ],
+            'required' => false
         ],
         'project_description' => [
             'title' => '作品說明',
@@ -93,7 +103,8 @@ class WorksController extends Controller
                 'setting_list' => false,
                 'edit' => true,
                 'collect' => false
-            ]
+            ],
+            'required' => false
         ],
         'imgs' => [
             'title' => '示意圖',
@@ -102,7 +113,7 @@ class WorksController extends Controller
             'display' => [
                 'setting_list' => false,
                 'edit' => true,
-                'collect' => true
+                'collect' => false
             ]
         ],
         'UsingLanguages' => [
@@ -113,7 +124,18 @@ class WorksController extends Controller
                 'setting_list' => false,
                 'edit' => true,
                 'collect' => true
-            ]
+            ],
+            'required' => false
+        ],
+        'git_repository_id' => [
+            'editable' => true,
+            'type' => 'hidden',
+            'display' => [
+                'setting_list' => false,
+                'edit' => true,
+                'collect' => true
+            ],
+            'required' => false
         ]
     ];
 
@@ -143,6 +165,7 @@ class WorksController extends Controller
                         '對外顯示'
                     ],
                     'content' => $this->works->paginate(10),
+                    'edit_type' => 'page'
                     // [
                     //     'target' => $this->works->all(),
                     //     // 'components' => $this->works->all(),
@@ -172,7 +195,15 @@ class WorksController extends Controller
      */
     public function store(Request $request)
     {
-        dd('aa');
+        $actionMessage = session(
+            'actionMessage',
+            match ($request->get('commandBtn')) {
+                'updateNow' => $this->updateReposInfo(),
+                default => back()
+            }
+        );
+
+        return back()->with('actionMessage', $actionMessage);
     }
 
     /**
@@ -183,9 +214,21 @@ class WorksController extends Controller
      */
     public function show($id)
     {
-        $setting_route = SettingTargetList::getSettingList();
+        $settingRoute = SettingTargetList::getSettingList();
+        $problemModels = SettingTargetList::getProblemModels();
 
-        $instance = $this->works::with('hasImg')->find($id);
+        $instance = new InstanceResource($this->works::find($id));
+
+        foreach ($problemModels as $prob => $attr) {
+            $modelLabel = Str::singular($prob) . '_name';
+            $problemModels[$prob]['list'] = DB::table($prob)
+                ->whereNotIn(
+                    $modelLabel,
+                    $instance->UsingLanguages->pluck('language_name')->all()
+                )->get();
+            $problemModels[$prob]['model_label'] = $modelLabel;
+        }
+
         $sections = [];
 
         collect($this->fieldSetting)->where(
@@ -209,13 +252,16 @@ class WorksController extends Controller
                     $sections[$settings['type']]['title'] = '標籤';
                     $sections[$settings['type']]['fields'][$field] = $settings;
                     break;
+                case 'hidden':
+                    $sections[$settings['type']]['fields'][$field] = $settings;
+                    break;
                 default:
                     $sections['attr']['title'] = '屬性';
                     $sections['attr']['fields'][$field] = $settings;
                     break;
             }
         });
-        return view('setting.crud.modify', compact('instance', 'sections', 'setting_route'));
+        return view('setting.crud.modify', compact('instance', 'sections', 'settingRoute', 'problemModels'));
     }
 
     /**
@@ -226,7 +272,7 @@ class WorksController extends Controller
      */
     public function edit($id)
     {
-
+        dd('aa');
         // $editor =  $this->works->find($id);
         // $view = [
         //     'page' => 'works/' . $id,
@@ -262,13 +308,14 @@ class WorksController extends Controller
     // public function update(Request $request, $id)
     public function update(ProjectPostRequest $request, $id)
     {
-
         if (isset($request->display))
             return $this->updateDisplayStatus($request, $id);
 
         $request->validated();
 
         $modify = $request->all();
+
+        $this->saveImgs($id, $modify['hasImg']);
 
         $modify['still_maintain'] = $request->has('still_maintain');
         $modify['display_status'] = $request->has('display_status');
@@ -310,5 +357,43 @@ class WorksController extends Controller
             'status' => 'update display success',
             'data' => Project::find($id)
         ]);
+    }
+
+    private function updateReposInfo()
+    {
+        Artisan::call('update:reposData');
+        return [
+            'main' => Artisan::output(),
+            'status' => 'success'
+        ];
+    }
+
+    private function saveImgs($id, $hasImg = [])
+    {
+        dd($hasImg);
+        if ($hasImg)
+            foreach ($hasImg as $img) {
+                $fileName = $img->hashName();
+                $img->storeAs(
+                    "uploads/images",
+                    $fileName,
+                    'public'
+                );
+
+                $img = Images::updateOrCreate([
+                    'img_name' => $fileName,
+                    'img_route' => "uploads/images",
+                    'img_descript' => ''
+                ]);
+
+                $this->works->find($id)
+                    ->hasImg()
+                    ->syncWithoutDetaching([
+                        $img->id => [
+                            'object_type' => Images::class,
+                            'subject_type' => Project::class,
+                        ],
+                    ]);
+            }
     }
 }

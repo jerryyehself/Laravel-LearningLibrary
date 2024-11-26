@@ -6,7 +6,7 @@ use Illuminate\View\Component;
 
 class FunctionalBtn extends Component
 {
-    public $color, $label, $type, $form, $name;
+    public $color, $label, $type, $form, $name, $class = ['btn'], $id, $value;
     /**
      * Create a new component instance.
      *
@@ -14,8 +14,13 @@ class FunctionalBtn extends Component
      */
     public function __construct($btnAttr = [])
     {
+        $this->class[] = "btn-{$btnAttr['color']}";
+
         collect($btnAttr)->map(function ($val, $attr) {
-            $this->{$attr} = $val;
+            if ($attr == 'class')
+                $this->class = array_merge($this->class, $val);
+            else
+                $this->{$attr} = $val;
         });
     }
 

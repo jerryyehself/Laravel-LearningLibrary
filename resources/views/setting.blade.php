@@ -11,9 +11,7 @@
 
             </div>
             <div class="d-flex flex-column container w-100">
-                <div class="setting-function d-flex">
-                    <button class="btn btn-primary" name="create">新增</button>
-                </div>
+                <x-setting.setting-target-functional-bar />
                 @isset($collection)
                     {{-- <nav class="d-flex align-items-center mx-3" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 目前項目：

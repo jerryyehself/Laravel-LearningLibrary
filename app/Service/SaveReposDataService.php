@@ -34,12 +34,13 @@ class SaveReposDataService
 
                 $language->touch();
 
-                $language->hasInstanceProjects()->syncWithoutDetaching([
-                    $project->id => [
-                        'object_type' => Language::class,
-                        'subject_type' => Project::class,
-                    ]
-                ]);
+                $language->hasInstanceProjects()
+                    ->syncWithoutDetaching([
+                        $project->id => [
+                            'object_type' => Language::class,
+                            'subject_type' => Project::class,
+                        ]
+                    ]);
 
                 // $language->hasInstanceProjects()
                 //     ->attach($project->id, [

@@ -9,7 +9,7 @@
                         </th>
                     @endforeach
 
-                    <th scope="col">管理選項</th>
+                    <th scope="col" class="col-2"></th>
                 </tr>
             </thead>
             <tbody>
@@ -50,11 +50,18 @@
                                     <!-- detail block -->
                                     @include('setting.detail')
                                 </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                            data-entity="{{ Request::segment(2) }}" data-id="{{ $content->id }}"
+                                            {{ !$content->display_status ?: 'checked' }}>
+                                    </div>
+                                </td>
                             @break
 
                             @case('practiceType_languages')
                                 <td class="font-monospace">{{ $content->language_name }}</td>
-                                <td>{{ $content->version }}</td>
+                                <!-- <td>{{ $content->version }}</td> -->
                             @break
 
                             @case('practiceType_environments')
@@ -80,21 +87,12 @@
                                 </td>
                             @break
                         @endswitch
+
                         <td>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                    data-entity="{{ Request::segment(2) }}" data-id="{{ $content->id }}"
-                                    {{ !$content->display_status ?: 'checked' }}>
+                            <div class="d-flex justify-content-end">
+                                <x-setting.setting-edit-btn :id="$content->id" :editType="$collection['edit_type']" />
                             </div>
-                        </td>
-                        <td>
-                            {{-- <button type=" button" class="btn btn-outline-primary btn-sm" id="modify-button"
-                            data-bs-toggle="modal" data-bs-target="#modify" data-id="{{ $content->id }}">
-                            編輯
-                        </button> --}}
-                            <x-setting.setting-edit-btn :id="$content->id" />
-                            {{-- @include('setting.crud.modify') --}}
-                            <x-setting.setting-disable-btn :id="$content->id" />
+                            <!-- <x-setting.setting-disable-btn :id="$content->id" /> -->
                             <!-- include('setting.crud.delete') -->
                         </td>
                     </tr>

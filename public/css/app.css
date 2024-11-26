@@ -86,6 +86,21 @@ main::-webkit-scrollbar {
     /* 設定圖標顏色 */
 }
 
+textarea {
+    white-space: pre-wrap;
+    /* 保留空白字符並自動換行 */
+    font-family: monospace;
+    /* 使用等寬字體，更適合顯示程式碼 */
+    -moz-tab-size: 2;
+      -o-tab-size: 2;
+         tab-size: 2;
+    /* 控制 tab 縮排大小 */
+}
+
+.toast {
+    z-index: 999;
+}
+
 /* 
 .autocomplete-items {
     border: 1px solid #d4d4d4;

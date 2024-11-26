@@ -71,19 +71,26 @@ class Project extends Model
             'central_pivot',
             'object_id',
             'subject_id'
+        )->wherePivot(
+            'object_type',
+            Language::class
         )
             ->withTimestamps();
     }
 
     public function hasImg()
     {
-        return $this->morphedByMany(
+        return $this->morphToMany(
             Images::class,
-            'object',
+            'subject',
             'central_pivot',
-            'object_id',
-            'subject_id'
+            'subject_id',
+            'object_id'
         )
+            ->wherePivot(
+                'object_type',
+                Images::class
+            )
             ->withTimestamps();
     }
 
