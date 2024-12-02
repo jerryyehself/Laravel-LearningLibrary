@@ -3,6 +3,7 @@ import urlProccessor from './urlProccessor';
 import fetchGitInfos from './fetchGitInfos';
 import fetchChartsData from './fetchChartsData';
 import settingDisplayChange from './settingDisplayChange';
+import fetchTags from './fetchTags';
 
 
 $(document).ready(function () {
@@ -30,7 +31,6 @@ $(document).ready(function () {
                 }));
             },
             _renderItem: function (ul, item) {
-                console.log('aa')
                 const li = $('<li>')
                     .addClass('list-group-item')
                     .append(`<strong>${item.label}</strong>`);
@@ -51,7 +51,7 @@ $(document).ready(function () {
             }
         }).autocomplete("instance")._renderItem = function (ul, item) {
             return $(item.autoCompleteItem).appendTo(ul);
-        };;
+        };
 
     })
 
@@ -89,20 +89,21 @@ $(document).ready(function () {
                 $(this).attr('data-has-file', 'true');
             }
 
-            imgCounterUpdate()
         }
     })
 
     $('.img-input .btn-close').on('click', function () {
         if ($('.img-input').length > 1) {
             $(this).closest('.img-input').remove()
-            imgCounterUpdate()
         }
 
     })
 
     $('.img-del').on('click', function () {
-        $(this).closest('.imgs').remove()
+        $(this).closest('.imgs').find('img').attr('src', '')
+        $(this).closest('.imgs').find('input').val('')
+        $(this).closest('.imgs').find('.file-upload-wrapper, .input-sign').removeClass('d-none')
+        $(this).parent().addClass('d-none')
     })
 
     if ($('.toast').length) {
@@ -114,9 +115,62 @@ $(document).ready(function () {
         });
     }
 
-    $(".sortable").sortable();
+    $(".sortable").sortable({
+        items: '.imgs:has(input[type="hidden"]:not([value=""]))', // 只允許拖曳 已存過 的 避免後端file覆蓋hidden key
+    });
     $(".sortable").disableSelection();
 
+    $('.file-input').on('change', function () {
+        const file = this.files[0];
+        const fileInput = $(this).closest('.file-upload-wrapper');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // 找到與 file-input 同層的 .file-preview
+                // fileInput.parent().find('.file-preview img').attr('src', e.target.result);
+                fileInput.closest('.imgs').find('img').attr('src', e.target.result);
+                fileInput.closest('.imgs').find('.input-show').removeClass('d-none');
+
+                // 隱藏 .plus-sign
+                fileInput.addClass('d-none');
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    $('input[name="addTags"]').on('input', function () {
+        var input = this.value
+
+        $(this).autocomplete({
+            source: async function (request, response) {
+
+                let data = await fetchTags(request.term);
+
+                response($.map(data, function (item) {
+                    // item.elementTags.forEach()
+                    return {
+                        name: item.name,
+                        value: item.name,
+                        label: item.name,
+                        id: item.id,
+                        tag: item.tag
+                    };
+                }));
+            },
+            select: function (event, ui) {
+
+                var list = $('.tags-container:not(#oriTags)')
+                console.log(list);
+
+                var row = $(`<div class="tag-container">${ui.item.tag}<input type="hidden" name="tags[]" value="${ui.item.id}"></div>`);
+                $('.btn-close', row).on('click', function () {
+                    $(this).closest('.tag-container').remove()
+                })
+                list.append(row);
+            }
+        })
+    })
     // $('[data-tag-fn="add"]').on('click',function(){
     //     $('')
     // })
@@ -132,9 +186,6 @@ $(document).ready(function () {
     //         console.log(element)
     //     });
     // })
-    function imgCounterUpdate() {
-        $('.img-counter').text($('.img-input input[data-has-file=true], .imgs').length)
-    }
 
 })
 

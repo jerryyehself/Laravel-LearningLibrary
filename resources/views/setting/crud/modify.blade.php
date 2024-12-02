@@ -52,7 +52,7 @@
                                         @foreach ($instance->UsingLanguages as $language)
                                             <div class="tag-container">
                                                 <x-element-tags :tag="$language->language_name" :delete="true" />
-                                                <input type="hidden" name="tags[]" value="{{ $language->id }}">
+                                                <input type="hidden" name="tags[]" value="{{ $language->pivot->id }}">
                                             </div>
                                         @endforeach
                                     </div>
@@ -89,32 +89,60 @@
                 </div>
             @endisset
             @isset($sections['img'])
-                <div class="row mb-3 w-100">
-                    <div class="col flex-column">
+                <div class="row mb-3 w-100 h-100">
+                    <div class="col d-flex flex-column">
                         <div class="row">
                             <h5 class="col">
                                 {{ $sections['img']['title'] }}
                             </h5>
                         </div>
-                        <div class="row">
-                            <div class="col align-items-center h-100">
-                                <div class="border rounded h-100 p-2 col">
-                                    <div class="row row-cols-md-5 w-100 g-0 gap-1 sortable">
+                        <div class="row h-100">
+                            <div class="col align-items-center">
+                                <div class="border rounded p-2 col h-100">
+                                    <div class="row row-cols-md-5 w-100 g-0 sortable h-100">
                                         {{-- <x-setting.carousel :album="$instance->hasImg" /> --}}
-                                        @foreach ($instance->hasImg as $img)
-                                            <div class="imgs col position-relative d-inline-block">
-                                                <img src="{{ asset('storage/' . $img->img_route . '/' . $img->img_name) }}"
-                                                    alt="" class="img-fluid img-thumbnail">
-                                                <button type="button"
-                                                    class="btn-close btn-sm position-absolute top-0 end-0 m-1 img-del"
-                                                    aria-label="Close"></button>
-                                                <input type="hidden" name="hasImg[]" value="{{ $img->id }}">
+                                        {{-- @foreach ($instance->hasImg as $img) --}}
+                                        @for ($counter = 0; $counter < 5; $counter++)
+                                            <div class="imgs col position-relative d-inline-block p-1">
+                                                <div @class([
+                                                    'file-upload-wrapper',
+                                                    'h-100',
+                                                    'd-none' => isset($instance->hasImg[$counter]),
+                                                ])>
+                                                    <div class="input-sign h-100">
+                                                        <input type="file" id="fileInput{{ $counter }}"
+                                                            class="file-input" name="hasImg[]" accept="image/*">
+                                                        <label for="fileInput{{ $counter }}"
+                                                            class="upload-box d-flex justify-content-center align-items-center">
+                                                            <span class="plus-sign">+</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div @class([
+                                                    'input-show',
+                                                    'h-100',
+                                                    'd-none' => !isset($instance->hasImg[$counter]),
+                                                ])>
+                                                    <button type="button"
+                                                        class="btn-close btn-sm position-absolute top-0 end-0 m-1 img-del"
+                                                        aria-label="Close"></button>
+                                                    @if (isset($instance->hasImg[$counter]))
+                                                        <img src="{{ asset('storage/' . $instance->hasImg[$counter]->img_route . '/' . $instance->hasImg[$counter]->img_name) }}"
+                                                            alt="" class="img-fluid img-thumbnail">
+                                                        <input type="hidden" name="hasImg[]"
+                                                            value="{{ $instance->hasImg[$counter]->pivot->id }}">
+                                                    @else
+                                                        <img src="" alt="" class="img-fluid img-thumbnail">
+                                                    @endif
+                                                </div>
                                             </div>
-                                        @endforeach
+
+                                            {{-- @endforeach --}}
+                                        @endfor
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-3 justify-content-start img-input-container ps-0">
+                            {{-- <div class="col-3 justify-content-start img-input-container ps-0">
                                 <div>上傳(已選
                                     <span class="img-counter">
                                         {{ $instance->hasImg->count() }}
@@ -130,7 +158,7 @@
                                     <input name="hasImg[]" type="file" class="form-control form-control-sm"
                                         aria-label="image" aria-describedby="image" data-has-file="false">
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>

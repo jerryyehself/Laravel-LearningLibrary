@@ -71,10 +71,14 @@ class Project extends Model
             'central_pivot',
             'object_id',
             'subject_id'
-        )->wherePivot(
-            'object_type',
-            Language::class
         )
+            ->using(CentralPivot::class)
+            ->wherePivot(
+                'object_type',
+                Language::class
+            )
+            ->wherePivot('deleted_at', null)
+            ->withPivot('id')
             ->withTimestamps();
     }
 
@@ -87,11 +91,12 @@ class Project extends Model
             'subject_id',
             'object_id'
         )
-            ->wherePivot(
-                'object_type',
-                Images::class
-            )
-            ->withTimestamps();
+            ->using(CentralPivot::class)
+            ->wherePivot('object_type', Images::class)
+            ->wherePivot('deleted_at', null)
+            ->withPivot('id', 'sort_info')
+            ->withTimestamps()
+            ->orderByPivot('sort_info');
     }
 
     // has resources

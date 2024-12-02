@@ -99,6 +99,56 @@ textarea {
     z-index: 999;
 }
 
+.file-upload-wrapper {
+    width: 100%;
+    /* 使上傳區域佔滿父容器 */
+    height: 100%;
+    position: relative;
+}
+
+.file-input {
+    display: none;
+    /* 隱藏原始輸入框 */
+}
+
+.upload-box {
+    width: 100%;
+    height: 100%;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    transition: border-color 0.3s;
+}
+
+.upload-box:hover {
+    border-color: #007bff;
+    /* 滑鼠懸停變化 */
+}
+
+.plus-sign {
+    font-size: 3rem;
+    color: #999;
+    position: absolute;
+    pointer-events: none;
+    /* 防止遮擋點擊 */
+}
+
+.file-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* 確保圖片自適應容器 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+}
+
 /* 
 .autocomplete-items {
     border: 1px solid #d4d4d4;

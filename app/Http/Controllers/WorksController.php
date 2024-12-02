@@ -6,6 +6,7 @@ use App\Http\Requests\ProjectPostRequest;
 use App\Http\Resources\InstanceResource;
 use App\Models\Backgroundmodels\Project;
 use App\Models\Backgroundmodels\Sourcedomain;
+use App\Models\CentralPivot;
 use App\Models\Images;
 use App\View\Components\setting\SettingTargetList;
 use Illuminate\Http\Request;
@@ -261,6 +262,7 @@ class WorksController extends Controller
                     break;
             }
         });
+
         return view('setting.crud.modify', compact('instance', 'sections', 'settingRoute', 'problemModels'));
     }
 
@@ -314,8 +316,7 @@ class WorksController extends Controller
         $request->validated();
 
         $modify = $request->all();
-
-        $this->saveImgs($id, $modify['hasImg']);
+        $this->saveImgs($id, array_filter($modify['hasImg']));
 
         $modify['still_maintain'] = $request->has('still_maintain');
         $modify['display_status'] = $request->has('display_status');
@@ -370,10 +371,22 @@ class WorksController extends Controller
 
     private function saveImgs($id, $hasImg = [])
     {
-        dd($hasImg);
-        if ($hasImg)
-            foreach ($hasImg as $img) {
+        //先把所有圖片紀錄軟刪除
+        Project::find($id)->hasImg()->each(function ($pivot) {
+            $pivot->pivot->deleteRelations();
+        });
+
+        if (!$hasImg) return true;
+
+        foreach ($hasImg as $sort => $img) {
+
+            if (!is_object($img)) {
+                $img = CentralPivot::withTrashed()->find($img);
+                $img->restore();
+                $img->id = $img->object_id;
+            } else {
                 $fileName = $img->hashName();
+
                 $img->storeAs(
                     "uploads/images",
                     $fileName,
@@ -385,15 +398,17 @@ class WorksController extends Controller
                     'img_route' => "uploads/images",
                     'img_descript' => ''
                 ]);
-
-                $this->works->find($id)
-                    ->hasImg()
-                    ->syncWithoutDetaching([
-                        $img->id => [
-                            'object_type' => Images::class,
-                            'subject_type' => Project::class,
-                        ],
-                    ]);
             }
+
+            $this->works->find($id)
+                ->hasImg()
+                ->syncWithoutDetaching([
+                    $img->id => [
+                        'object_type' => Images::class,
+                        'subject_type' => Project::class,
+                        'sort_info' => $sort
+                    ],
+                ]);
+        }
     }
 }

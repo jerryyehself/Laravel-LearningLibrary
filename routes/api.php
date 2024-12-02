@@ -17,11 +17,14 @@ use App\Models\ProjectElement;
 use App\Notifications\GitUpdateStatus;
 use App\Notify\GitNotifiable;
 use App\Service\SaveReposDataService;
+use App\View\Components\ElementTags;
+use Github\Api\GitData\Tags;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\View;
 use Rebing\GraphQL\GraphQL as GraphQLGraphQL;
 use Rebing\GraphQL\Support\Facades\GraphQL;
 use Illuminate\Support\Str;
@@ -59,6 +62,26 @@ Route::put(
         );
     }
 );
+
+Route::post('addTags', function (Request $request) {
+    $nameCol = Str::singular($request->type) . '_name';
+    $tags = DB::table($request->type)
+        ->select(['id', $nameCol])
+        ->whereNotIn($nameCol, $request->tags)
+        ->where(
+            $nameCol,
+            'like',
+            "%{$request->input}%"
+        )
+        ->get();
+    $container = $tags->map(function ($tag) use ($nameCol) {
+        $co = View::make('components.element-tags', ['tag' => $tag->$nameCol, 'delete' => true])->render();
+        return ['tag' => $co, 'name' => $tag->$nameCol, 'id' => $tag->id];
+    });
+    // dd($container);
+    return response($container);
+});
+
 Route::get('graphQLtest', function () {
     // $test = new Project;
     // dd($test->find(1)->first()->projectElements->values('element_name'));
