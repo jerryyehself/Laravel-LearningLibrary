@@ -15,6 +15,7 @@ use App\Models\Problemmodels\Packagetool;
 use App\Models\ProjectElement;
 use App\Models\Resourcemodels\Resource;
 use Carbon\Carbon;
+use PhpParser\Node\Expr\Cast\Object_;
 
 class Project extends Model
 {
@@ -47,39 +48,40 @@ class Project extends Model
     // using frameworks
     public function frameworks()
     {
-        return $this->morphToMany(Framework::class, 'frameworkusage');
+        return $this->relations(Framework::class);
     }
 
     // using environments
     public function environments()
     {
-        return $this->morphToMany(Environment::class, 'environmentusage');
+        return $this->relations(Environment::class);
     }
 
     // using packagetools
     public function packagetools()
     {
-        return $this->morphToMany(Packagetool::class, 'packagetoolusage');
+        return $this->relations(Packagetool::class);
     }
 
     // using languages
     public function Usinglanguages()
     {
-        return $this->morphedByMany(
-            Language::class,
-            'object',
-            'central_pivot',
-            'object_id',
-            'subject_id'
-        )
-            ->using(CentralPivot::class)
-            ->wherePivot(
-                'object_type',
-                Language::class
-            )
-            ->wherePivot('deleted_at', null)
-            ->withPivot('id')
-            ->withTimestamps();
+        return $this->relations(Language::class);
+        // return $this->morphedByMany(
+        //     Language::class,
+        //     'object',
+        //     'central_pivot',
+        //     'object_id',
+        //     'subject_id'
+        // )
+        //     ->using(CentralPivot::class)
+        //     ->wherePivot(
+        //         'object_type',
+        //         Language::class
+        //     )
+        //     ->wherePivot('deleted_at', null)
+        //     ->withPivot('id')
+        //     ->withTimestamps();
     }
 
     public function hasImg()
@@ -132,8 +134,22 @@ class Project extends Model
             ->select('project_name', 'id');
     }
 
-    public function relations()
+    private function relations($model)
     {
-        return $this->hasMany(CentralPivot::class, 'object_id');
+        return $this->morphedByMany(
+            $model,
+            'object',
+            'central_pivot',
+            'object_id',
+            'subject_id'
+        )
+            ->using(CentralPivot::class)
+            ->wherePivot(
+                'object_type',
+                $model
+            )
+            ->wherePivot('deleted_at', null)
+            ->withPivot('id')
+            ->withTimestamps();;
     }
 }

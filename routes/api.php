@@ -63,8 +63,10 @@ Route::put(
     }
 );
 
-Route::post('addTags', function (Request $request) {
-    $nameCol = Str::singular($request->type) . '_name';
+// dd('aa');
+Route::post('/addTags', function (Request $request) {
+    $model = Str::singular($request->type);
+    $nameCol = $model . '_name';
     $tags = DB::table($request->type)
         ->select(['id', $nameCol])
         ->whereNotIn($nameCol, $request->tags)
@@ -74,9 +76,9 @@ Route::post('addTags', function (Request $request) {
             "%{$request->input}%"
         )
         ->get();
-    $container = $tags->map(function ($tag) use ($nameCol) {
-        $co = View::make('components.element-tags', ['tag' => $tag->$nameCol, 'delete' => true])->render();
-        return ['tag' => $co, 'name' => $tag->$nameCol, 'id' => $tag->id];
+    $container = $tags->map(function ($tag) use ($nameCol, $model) {
+        $badge = View::make('components.element-tags', ['tag' => $tag->$nameCol, 'delete' => true])->render();
+        return ['badge' => $badge, 'name' => $tag->$nameCol, 'value' => "{$model}_{$tag->id}"];
     });
     // dd($container);
     return response($container);

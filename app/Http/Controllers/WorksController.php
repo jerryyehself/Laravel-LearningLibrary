@@ -213,7 +213,15 @@ class WorksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id) {}
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
     {
         $settingRoute = SettingTargetList::getSettingList();
         $problemModels = SettingTargetList::getProblemModels();
@@ -229,75 +237,10 @@ class WorksController extends Controller
                 )->get();
             $problemModels[$prob]['model_label'] = $modelLabel;
         }
-
-        $sections = [];
-
-        collect($this->fieldSetting)->where(
-            'display.edit',
-            true
-        )->map(function ($settings, $field) use (&$sections) {
-            switch ($settings['type']) {
-                case 'switch':
-                    $sections[$settings['type']]['title'] = '狀態';
-                    $sections[$settings['type']]['fields'][$field] = $settings;
-                    break;
-                case 'textarea':
-                    $sections['attr']['title'] = '屬性';
-                    $sections[$settings['type']]['fields'][$field] = $settings;
-                    break;
-                case 'img':
-                    $sections[$settings['type']]['title'] = '示意圖';
-                    $sections[$settings['type']]['fields'][$field] = $settings;
-                    break;
-                case 'tag':
-                    $sections[$settings['type']]['title'] = '標籤';
-                    $sections[$settings['type']]['fields'][$field] = $settings;
-                    break;
-                case 'hidden':
-                    $sections[$settings['type']]['fields'][$field] = $settings;
-                    break;
-                default:
-                    $sections['attr']['title'] = '屬性';
-                    $sections['attr']['fields'][$field] = $settings;
-                    break;
-            }
-        });
+        // dd(SettingTargetList::getSettingListModel());
+        $sections = $this->setInputs();
 
         return view('setting.crud.modify', compact('instance', 'sections', 'settingRoute', 'problemModels'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        dd('aa');
-        // $editor =  $this->works->find($id);
-        // $view = [
-        //     'page' => 'works/' . $id,
-        //     'edittarget' => '修改作品介紹與設定',
-        //     'titles' => [
-        //         '作品名稱',
-        //         '所屬網域',
-        //         '作品連結',
-        //         'Git儲存庫',
-        //         '維護狀態',
-        //         '作品說明'
-        //     ],
-        //     'content' => [
-        //         'name' => $editor->project_name,
-        //         'release_domain' => '',
-        //         'url' => $editor->release_url,
-        //         'git' => $editor->git_repository_url,
-        //         'maintain_status' => $editor->still_maintain,
-        //         'description' => $editor->project_description
-        //     ]
-        // ];
-
-        // return view('models.collectionmodify', $view);
     }
 
     /**
@@ -317,6 +260,7 @@ class WorksController extends Controller
 
         $modify = $request->all();
         $this->saveImgs($id, array_filter($modify['hasImg']));
+        // $this->saveTags($id, array_filter($modify['hasImg']));
 
         $modify['still_maintain'] = $request->has('still_maintain');
         $modify['display_status'] = $request->has('display_status');
@@ -411,4 +355,118 @@ class WorksController extends Controller
                 ]);
         }
     }
+
+    private function setInputs()
+    {
+        $sections = [];
+
+        collect($this->fieldSetting)
+            ->where('display.edit', true)
+            ->each(function ($settings, $field) use (&$sections) {
+                $type = $settings['type'];
+
+                // 設定標題，如果需要
+                $titleMap = [
+                    'switch' => '狀態',
+                    'img' => '示意圖',
+                    'tag' => '標籤',
+                    'textarea' => '',
+                    'hidden' => '',
+                    'attr' => '屬性'
+                ];
+
+                $sectionKey = in_array($type, ['text', 'url']) ? 'attr' : $type;
+
+                if (isset($titleMap[$sectionKey]))
+                    $sections[$sectionKey]['title'] = $titleMap[$sectionKey];
+
+                $sections[$sectionKey]['fields'][$field] = $settings;
+            });
+        return $sections;
+    }
+
+    private function saveTags($id, $tags = [])
+    {
+        //先把所有圖片紀錄軟刪除
+        Project::find($id)->hasImg()->each(function ($pivot) {
+            $pivot->pivot->deleteRelations();
+        });
+
+        if (!$hasImg) return true;
+
+        foreach ($hasImg as $sort => $img) {
+
+            if (!is_object($img)) {
+                $img = CentralPivot::withTrashed()->find($img);
+                $img->restore();
+                $img->id = $img->object_id;
+            } else {
+                $fileName = $img->hashName();
+
+                $img->storeAs(
+                    "uploads/images",
+                    $fileName,
+                    'public'
+                );
+
+                $img = Images::updateOrCreate([
+                    'img_name' => $fileName,
+                    'img_route' => "uploads/images",
+                    'img_descript' => ''
+                ]);
+            }
+
+            $this->works->find($id)
+                ->hasImg()
+                ->syncWithoutDetaching([
+                    $img->id => [
+                        'object_type' => Images::class,
+                        'subject_type' => Project::class,
+                        'sort_info' => $sort
+                    ],
+                ]);
+        }
+    }
+
+    // private function setInputs()
+    // {
+    //     $sections = [];
+
+    //     collect($this->fieldSetting)->where(
+    //         'display.edit',
+    //         true
+    //     )->map(function ($settings, $field) use (&$sections) {
+
+
+    //         switch ($settings['type']) {
+    //             case 'switch':
+    //                 $sections[$settings['type']]['title'] = '狀態';
+    //                 $sections[$settings['type']]['fields'][$field] = $settings;
+    //                 break;
+    //             case 'textarea':
+    //                 $sections['attr']['title'] = '屬性';
+    //                 $sections[$settings['type']]['fields'][$field] = $settings;
+    //                 break;
+    //             case 'img':
+    //                 $sections[$settings['type']]['title'] = '示意圖';
+    //                 $sections[$settings['type']]['fields'][$field] = $settings;
+    //                 break;
+    //             case 'tag':
+    //                 $sections[$settings['type']]['title'] = '標籤';
+    //                 $sections[$settings['type']]['fields'][$field] = $settings;
+    //                 break;
+    //             case 'hidden':
+    //                 $sections[$settings['type']]['fields'][$field] = $settings;
+    //                 break;
+    //             default:
+    //                 $sections['attr']['title'] = '屬性';
+    //                 $sections['attr']['fields'][$field] = $settings;
+    //                 break;
+    //         }
+
+    //         return $sections;
+    //     });
+
+    //     return $sections;
+    // }
 }

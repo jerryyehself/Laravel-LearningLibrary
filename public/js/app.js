@@ -149,7 +149,6 @@ $(document).ready(function () {
     }
   });
   $('input[name="addTags"]').on('input', function () {
-    var input = this.value;
     $(this).autocomplete({
       source: function () {
         var _source2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(request, response) {
@@ -164,11 +163,11 @@ $(document).ready(function () {
                 response($.map(data, function (item) {
                   // item.elementTags.forEach()
                   return {
-                    name: item.name,
-                    value: item.name,
+                    // name: item.name,
+                    value: item.value,
                     label: item.name,
-                    id: item.id,
-                    tag: item.tag
+                    // id: item.id,
+                    badge: item.badge
                   };
                 }));
               case 4:
@@ -184,12 +183,13 @@ $(document).ready(function () {
       }(),
       select: function select(event, ui) {
         var list = $('.tags-container:not(#oriTags)');
-        console.log(list);
-        var row = $("<div class=\"tag-container\">".concat(ui.item.tag, "<input type=\"hidden\" name=\"tags[]\" value=\"").concat(ui.item.id, "\"></div>"));
+        var row = $("<div class=\"tag-container\">".concat(ui.item.badge, "<input type=\"hidden\" name=\"tags[]\" value=\"").concat(ui.item.value, "\"></div>"));
         $('.btn-close', row).on('click', function () {
           $(this).closest('.tag-container').remove();
         });
         list.append(row);
+        $(this).val('');
+        return false;
       }
     });
   });
@@ -450,7 +450,7 @@ function _fetchTags() {
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
-          apiurl = "../../api/addTags";
+          apiurl = "../../../api/addTags";
           controller = new AbortController();
           signal = controller.signal;
           config = {

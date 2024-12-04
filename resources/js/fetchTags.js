@@ -1,6 +1,6 @@
 export default async function fetchTags(searchTerm) {
 
-    let apiurl = `../../api/addTags`;
+    let apiurl = `../../../api/addTags`;
 
     const controller = new AbortController();
     const signal = controller.signal;

@@ -140,7 +140,6 @@ $(document).ready(function () {
     });
 
     $('input[name="addTags"]').on('input', function () {
-        var input = this.value
 
         $(this).autocomplete({
             source: async function (request, response) {
@@ -150,24 +149,25 @@ $(document).ready(function () {
                 response($.map(data, function (item) {
                     // item.elementTags.forEach()
                     return {
-                        name: item.name,
-                        value: item.name,
+                        // name: item.name,
+                        value: item.value,
                         label: item.name,
-                        id: item.id,
-                        tag: item.tag
+                        // id: item.id,
+                        badge: item.badge
                     };
                 }));
             },
             select: function (event, ui) {
 
                 var list = $('.tags-container:not(#oriTags)')
-                console.log(list);
 
-                var row = $(`<div class="tag-container">${ui.item.tag}<input type="hidden" name="tags[]" value="${ui.item.id}"></div>`);
+                var row = $(`<div class="tag-container">${ui.item.badge}<input type="hidden" name="tags[]" value="${ui.item.value}"></div>`);
                 $('.btn-close', row).on('click', function () {
                     $(this).closest('.tag-container').remove()
                 })
                 list.append(row);
+                $(this).val('')
+                return false;
             }
         })
     })
