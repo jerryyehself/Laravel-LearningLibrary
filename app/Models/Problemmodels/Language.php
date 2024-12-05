@@ -13,6 +13,7 @@ use App\Models\Resourcemodels\Resource;
 use App\Models\Problemmodels\Framework;
 use App\Models\Problemmodels\Environment;
 use App\Models\Problemmodels\Packagetool;
+use Google\Rpc\ResourceInfo;
 
 class Language extends Model
 {
@@ -45,7 +46,14 @@ class Language extends Model
     // has resources
     public function resources()
     {
-        return $this->morphToMany(Resource::class, 'resourceabout',);
+        return $this->morphToMany(
+            ResourceInfo::class,
+            'object',
+            'central_pivot',
+            'subject_id',
+            'object_id'
+        )
+            ->withTimestamps();
     }
 
     // has related use

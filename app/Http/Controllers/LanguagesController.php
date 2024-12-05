@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LanguagePostRequest;
 use App\Http\Resources\InstanceResource;
 use App\Models\Backgroundmodels\Project;
 use App\Models\Problemmodels\Language as Languages;
 use App\View\Components\setting\SettingTargetList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class LanguagesController extends Controller
 {
@@ -83,6 +85,7 @@ class LanguagesController extends Controller
 
     public function __construct()
     {
+        // dd(Route::current());
         $this->languages = new Languages;
     }
     /**
@@ -117,10 +120,7 @@ class LanguagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -136,7 +136,15 @@ class LanguagesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id) {}
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
     {
 
         $settingRoute = SettingTargetList::getSettingList();
@@ -166,24 +174,16 @@ class LanguagesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {}
+    public function update(LanguagePostRequest $request, $id)
+    {
+        dd($request->validated());
+    }
 
     /**
      * Remove the specified resource from storage.

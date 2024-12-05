@@ -91,7 +91,7 @@ class SettingTargetFunctionalBar extends Component
                     'placeholder' => ''
                 ]
             ],
-            '' => [
+            'packagetools' => [
                 'btns' => [
                     'create' => [
                         'label' => '新增',
@@ -108,7 +108,7 @@ class SettingTargetFunctionalBar extends Component
                     'placeholder' => ''
                 ]
             ],
-            '' => [
+            'enviroments' => [
                 'btns' => [
                     'create' => [
                         'label' => '新增',
@@ -125,7 +125,7 @@ class SettingTargetFunctionalBar extends Component
                     'placeholder' => ''
                 ]
             ],
-            '' => [
+            'framworks' => [
                 'btns' => [
                     'create' => [
                         'label' => '新增',

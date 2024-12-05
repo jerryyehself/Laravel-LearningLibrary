@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class PackagetoolsController extends Controller
 {
-
+    public $packagetool;
     public function __construct()
     {
         $this->packagetool = new Packagetool;
@@ -20,12 +20,21 @@ class PackagetoolsController extends Controller
     public function index()
     {
         $view = [
-            'page' => 'packagetools',
+            'page' => 'languages',
             'title' => [
-                '外掛套件',
-                '版本',
+                '框架名稱',
+                '官方網站',
+                '',
+                // '版本'
             ],
-            'content' => ['target' => $this->packagetool->all()],
+            'content' => $this->packagetool->paginate(10),
+            // [
+            //     'target' => $this->language->all(),
+            //     'projectCount' => $project->count(),
+            //     'projectUsage' => $this->language->withCount('hasInstanceProjects')->get(),
+            //     'resourceCounter' => $this->language->withCount('resources')->get()
+            // ],
+            'edit_type' => 'modal',
             'counter' => $this->packagetool->count()
         ];
         return view('setting', ['collection' => $view]);

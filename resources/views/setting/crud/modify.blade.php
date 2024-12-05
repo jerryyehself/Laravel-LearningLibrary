@@ -191,7 +191,7 @@
                             {{ $sections['attr']['title'] }}
                         </h5>
                         @isset($sections['attr']['fields'])
-                            <div class="row g-3 align-items-center py-2">
+                            <div class="row g-0 gap-3 align-items-center py-2">
                                 @foreach ($sections['attr']['fields'] as $field => $fieldSetting)
                                     <div class="col form-floating">
                                         <input @class(['form-control', 'border-danger' => $errors->has($field)]) type="{{ $fieldSetting['type'] }}"
@@ -209,7 +209,7 @@
                         @endisset
                         @isset($sections['textarea'])
                             @foreach ($sections['textarea']['fields'] as $field => $fieldSetting)
-                                <div class="row g-3 align-items-center py-2">
+                                <div class="row g-0 gap-3 align-items-center py-2">
                                     <div class="col form-floating">
                                         <textarea name="{{ $field }}" id="{{ $field }}" class="form-control h-100" placeholder="">{{ $instance[$field] }}</textarea>
                                         <label for="{{ $field }}" class="form-label text-muted">
