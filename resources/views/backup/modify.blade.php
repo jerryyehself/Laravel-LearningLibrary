@@ -3,6 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
+                @dd(csrf_token())
                 @switch(Request::segment(2))
                     @case('works')
                         <h5 class="modal-title fw-bold" id="projectModify">
@@ -12,6 +13,7 @@
                     <form action="{{ route(Request::segment(2) . '.update', $content->id) }} " method="POST">
                         <div class="modal-body">
                             @csrf
+
                             @method('PATCH')
                             <div class="row mb-3 ">
                                 <label class="col-3 my-auto fw-bold" for="project_name">作品名稱</label>

@@ -337,11 +337,15 @@ class WorksController extends Controller
                     'public'
                 );
 
-                $img = Images::updateOrCreate([
-                    'img_name' => $fileName,
-                    'img_route' => "uploads/images",
-                    'img_descript' => ''
-                ]);
+                $img = Images::updateOrCreate(
+                    [
+                        'img_name' => $fileName
+                    ],
+                    [
+                        'img_route' => "uploads/images",
+                        'img_descript' => ''
+                    ]
+                );
             }
 
             $this->works->find($id)

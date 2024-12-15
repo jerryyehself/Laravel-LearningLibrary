@@ -2,33 +2,27 @@
 
 namespace App\Models\Resourcemodels;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Backgroundmodels\Sourcedomain;
-
 use App\Models\Problemmodels\Environment;
 use App\Models\Problemmodels\Framework;
 use App\Models\Problemmodels\Language;
 use App\Models\Problemmodels\Packagetool;
+use App\Traits\InstancesInit;
 
 class Resource extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
-
-    public $timestamps = false;
+    use InstancesInit;
 
     protected $fillable = [
-        'title',
-        'sourcedomain_id',
-        'location',
-        'content_language',
-        'creation_date',
-        'last_answer_date',
-        // 'note'
-
+        'resource_title',
+        'resource_note',
+        'resource_location',
+        'resource_content_language',
+        'resource_status',
+        'resource_creation_date',
+        'resource_updated_date'
     ];
 
     // from domain

@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Backgroundmodels\Project;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use PhpParser\Node\Expr\Cast\Object_;
 
 class Images extends Model
 {
@@ -20,7 +18,6 @@ class Images extends Model
 
     public function isImgOf(Object $model)
     {
-        dd('aa');
         return $this->morphedByMany(
             $model,
             'subject',

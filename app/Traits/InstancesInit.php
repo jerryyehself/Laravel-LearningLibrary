@@ -1,22 +1,17 @@
 <?php
 
-namespace App\Models;
+namespace App\Traits;
 
+use App\Models\CentralPivot;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ResourcesInfo extends Model
+/**
+ * inital instance models
+ */
+trait InstancesInit
 {
     use HasFactory, SoftDeletes;
-
-    protected $fillable = [
-        'resource_type',
-        'resource_name',
-        'resource_url',
-        'resource_description',
-        'resource_status',
-    ];
 
     public function isResouceOf($backgroudModel)
     {

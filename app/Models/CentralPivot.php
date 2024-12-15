@@ -24,14 +24,6 @@ class CentralPivot extends MorphPivot
         'sort_info'
     ];
 
-    // public function languages()
-    // {
-    //     return $this->hasMany(Language::class, 'id', 'object_id')
-    //         ->whereHas('relations', function ($query) {
-    //             $query->where('object', 'Language');
-    //         });
-    // }
-
     public function deleteRelations()
     {
         return $this->delete();

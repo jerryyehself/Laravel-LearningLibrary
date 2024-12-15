@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LanguagePostRequest;
 use App\Http\Resources\InstanceResource;
 use App\Models\Backgroundmodels\Project;
+use App\Models\Backgroundmodels\Sourcedomain;
 use App\Models\Problemmodels\Language as Languages;
+use App\Models\ResourceAuthorize;
+use App\Models\Resourcemodels\Resource;
+use App\Models\ResourcesInfo;
 use App\View\Components\setting\SettingTargetList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,7 +29,7 @@ class LanguagesController extends Controller
             ],
             'required' => false
         ],
-        'offical_document' => [
+        'official_document' => [
             'title' => '官方網站',
             'type' => 'url',
             'display' => [
@@ -182,7 +186,75 @@ class LanguagesController extends Controller
      */
     public function update(LanguagePostRequest $request, $id)
     {
-        dd($request->validated());
+        $modify = $request->validated();
+
+
+        if ($modify['official_document']) {
+
+            $urlParas = $this->explodeURL($modify['official_document']);
+
+            $domain = ResourceAuthorize::updateOrCreate(
+                ['resource_domain_url' => $urlParas['host']]
+            );
+
+            $language = $this->languages::find($id);
+
+            $resource = Resource::updateOrCreate(
+                [
+                    'resource_location' => $urlParas['path'],
+                    'resource_domain_id' => $domain->id
+                ],
+                [
+                    'resource_content_language' => 'eng',
+                ]
+            );
+            // dd($language->resources()->where('resources.id', $resource->id)->exists());
+            if (!$language->resources()->where('resources.id', $resource->id)->exists()) {
+                $language->resources()
+                    ->syncWithoutDetaching(
+                        [
+                            $resource->id =>
+                            [
+                                'instantiated_type' => $this->languages::class,
+                                'instance_type' => 'official_document',
+                                'instance_id' => $resource->id
+                            ]
+                        ]
+                    );
+            }
+            dd($resource);
+
+            $resource = $domain->resources()->updateOrCreate(
+                [
+                    'resource_location' => $urlParas['path'],
+                    'resource_content_language' => 'eng'
+                ]
+            );
+            // dd($resource->id);
+
+            $host = ResourceAuthorize::updateOrCreate(
+                [
+                    'resource_domain_url' => parse_url($modify['officiail_document'], PHP_URL_HOST)
+                ]
+            );
+            // if ($language->resources()->where('resource_type', 'official_document')) {
+            //     dd('aa');
+            // }
+            $resourceInfo = ResourcesInfo::create(
+                [
+                    'resource_type' => 'official_document',
+                    'resource_url' => $modify['official_document'],
+                    'resource_name' => null,
+                    'resource_description' => null
+                ]
+            )->save();
+            dd('aa');
+            $resourceInfo->isResouceOf();
+        }
+
+
+
+        dd($resourceInfo);
     }
 
     /**
@@ -194,5 +266,11 @@ class LanguagesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function explodeURL($url = '')
+    {
+        $urlParas = parse_url($url);
+        return ['host' => $urlParas['host'], 'path' => $urlParas['path']];
     }
 }

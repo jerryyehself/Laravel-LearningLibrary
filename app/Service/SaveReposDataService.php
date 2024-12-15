@@ -41,12 +41,6 @@ class SaveReposDataService
                             'subject_type' => Project::class,
                         ]
                     ]);
-
-                // $language->hasInstanceProjects()
-                //     ->attach($project->id, [
-                //         'object_type' => Language::class,
-                //         'subject_type' => Project::class,
-                //     ]);
             });
 
             collect($repo['topics'])->map(function ($tag) use ($project) {

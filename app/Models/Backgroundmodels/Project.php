@@ -67,21 +67,6 @@ class Project extends Model
     public function Usinglanguages()
     {
         return $this->relations(Language::class);
-        // return $this->morphedByMany(
-        //     Language::class,
-        //     'object',
-        //     'central_pivot',
-        //     'object_id',
-        //     'subject_id'
-        // )
-        //     ->using(CentralPivot::class)
-        //     ->wherePivot(
-        //         'object_type',
-        //         Language::class
-        //     )
-        //     ->wherePivot('deleted_at', null)
-        //     ->withPivot('id')
-        //     ->withTimestamps();
     }
 
     public function hasImg()
