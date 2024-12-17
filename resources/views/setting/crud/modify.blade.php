@@ -223,43 +223,41 @@
             </div>
             @endif
             @isset($sections['inputGroup'])
-                <div class="row w-100">
-                    <h5 class="">
-                        {{ $sections['inputGroup']['title'] }}
-                    </h5>
+                @foreach ($sections['inputGroup'] as $key => $inputGroup)
+                    <div class="row w-100">
+                        <h5 class="">
+                            {{ $inputGroup['title'] }}
+                        </h5>
 
-                    @foreach ($sections['inputGroup']['fields'] as $field => $group)
-                        <div class="col">
-                            <div class="">
-                                <div class="col">
-                                    <div class="input-group mb-3">
-                                        @isset($group['dropDown'])
-                                            {{-- <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {{$group['dropDown']['title']}}
-                            </button>
-                            <ul class="dropdown-menu">
-                                @foreach ($group['dropDown']['list'] as $key => $type)
-                                <li><a class="dropdown-item" href="#">{{$type['label']}}</a></li>
-                                @endforeach
-
-                            </ul> --}}
-                                            <select name="{{ $group['dropDown']['name'] }}[]" id="{{ $field }}"
-                                                class="btn btn-outline-secondary dropdown-toggle">
-                                                @foreach ($group['dropDown']['list'] as $value => $type)
-                                                    <option value="{{ $value }}">
-                                                        {{ $type['label'] }}
-                                                    </option>
+                        @foreach ($inputGroup['fields'] as $field => $group)
+                            <div class="col">
+                                <div class="">
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            @isset($group['dropDown'])
+                                                @foreach ($group['dropDown'] as $drowpDown)
+                                                    <select name="{{ $field . '_' . $drowpDown['name'] }}[]"
+                                                        id="{{ $field }}"
+                                                        class="btn btn-outline-secondary dropdown-toggle">
+                                                        @foreach ($drowpDown['list'] as $value => $type)
+                                                            <option value="{{ $value }}"
+                                                                @if ($instance[$field])  @endif>
+                                                                {{ $type['label'] }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
                                                 @endforeach
-                                            </select>
-                                        @endisset
-                                        <input type="text" name="{{ $field }}[]" class="form-control"
-                                            placeholder="" aria-label="" aria-describedby="basic-addon1">
+                                            @endisset
+                                            <input type="text" name="{{ $field }}[]" class="form-control"
+                                                placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                                value="@if ($instance[$field]) {{ $instance[$field]['url'] }} @endif">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
-                </div>
+                        @endforeach
+                    </div>
+                @endforeach
             @endisset
             @isset($sections['hidden'])
                 @foreach ($sections['hidden']['fields'] as $field => $fieldSetting)

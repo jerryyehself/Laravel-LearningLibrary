@@ -31,12 +31,13 @@ class LanguagesController extends Controller
         ],
         'official_document' => [
             'title' => '官方網站',
-            'type' => 'url',
+            'type' => 'inputGroup',
             'display' => [
                 'setting_list' => false,
                 'edit' => true,
                 'collect' => false
             ],
+            'dropDown' => ['content_language'],
             'required' => true
         ],
         'document_list' => [
@@ -48,7 +49,7 @@ class LanguagesController extends Controller
                 'edit' => true,
                 'collect' => false
             ],
-            'dropDown' => 'source_type',
+            'dropDown' => ['source_type', 'content_language'],
             'required' => false
         ],
         'logo' => [
@@ -67,7 +68,6 @@ class LanguagesController extends Controller
             'name' => 'source_type',
             'editable' => true,
             'type' => 'dropDown',
-            'for' => 'document_list',
             'display' => [
                 'setting_list' => false,
                 'edit' => false,
@@ -82,6 +82,25 @@ class LanguagesController extends Controller
                 ],
                 'file' => [
                     'label' => '檔案'
+                ]
+            ]
+        ],
+        'content_language' => [
+            'title' => '資源類型',
+            'name' => 'source_type',
+            'editable' => true,
+            'type' => 'dropDown',
+            'display' => [
+                'setting_list' => false,
+                'edit' => false,
+                'collect' => false
+            ],
+            'list' => [
+                'eng' => [
+                    'label' => 'eng'
+                ],
+                'chi' => [
+                    'label' => 'chi'
                 ]
             ]
         ]
@@ -153,24 +172,29 @@ class LanguagesController extends Controller
 
         $settingRoute = SettingTargetList::getSettingList();
 
-        $instance = new InstanceResource($this->languages::find($id));
-        // dd($instance->toArray(request()));
+        $instance = new InstanceResource($this->languages::with('resources')->find($id));
+        // dd(collect($instance)->toArray());
         $sections = [];
 
         collect($this->fieldSetting)->where(
             'display.edit',
             true
         )->map(function ($settings, $field) use (&$sections) {
-            if (isset($settings['dropDown']))
-                $settings['dropDown'] = $this->fieldSetting[$settings['dropDown']];
+            if (isset($settings['dropDown'])) {
+                foreach ($settings['dropDown'] as &$drowpDown)
+                    $drowpDown = $this->fieldSetting[$drowpDown];
+            }
             switch ($settings['type']) {
                 case 'url':
                     $sections['attr']['title'] = '屬性';
                     $sections['attr']['fields'][$field] = $settings;
                     break;
                 default:
-                    $sections[$settings['type']]['title'] = $settings['title'];
-                    $sections[$settings['type']]['fields'][$field] = $settings;
+                    $sections[$settings['type']][] = [
+                        'title' => $settings['title'],
+                        'fields' => [$field => $settings]
+                    ];
+
                     break;
             }
         });
@@ -187,7 +211,6 @@ class LanguagesController extends Controller
     public function update(LanguagePostRequest $request, $id)
     {
         $modify = $request->validated();
-
 
         if ($modify['official_document']) {
 
@@ -208,7 +231,7 @@ class LanguagesController extends Controller
                     'resource_content_language' => 'eng',
                 ]
             );
-            // dd($language->resources()->where('resources.id', $resource->id)->exists());
+
             if (!$language->resources()->where('resources.id', $resource->id)->exists()) {
                 $language->resources()
                     ->syncWithoutDetaching(
@@ -222,39 +245,14 @@ class LanguagesController extends Controller
                         ]
                     );
             }
-            dd($resource);
-
-            $resource = $domain->resources()->updateOrCreate(
-                [
-                    'resource_location' => $urlParas['path'],
-                    'resource_content_language' => 'eng'
-                ]
-            );
-            // dd($resource->id);
-
-            $host = ResourceAuthorize::updateOrCreate(
-                [
-                    'resource_domain_url' => parse_url($modify['officiail_document'], PHP_URL_HOST)
-                ]
-            );
-            // if ($language->resources()->where('resource_type', 'official_document')) {
-            //     dd('aa');
-            // }
-            $resourceInfo = ResourcesInfo::create(
-                [
-                    'resource_type' => 'official_document',
-                    'resource_url' => $modify['official_document'],
-                    'resource_name' => null,
-                    'resource_description' => null
-                ]
-            )->save();
-            dd('aa');
-            $resourceInfo->isResouceOf();
         }
 
-
-
-        dd($resourceInfo);
+        return redirect('setting/languages')
+            ->with('actionmessage', [
+                'main' => '修改成功',
+                'status' => 'success',
+                'data' => $language
+            ]);
     }
 
     /**
@@ -272,5 +270,10 @@ class LanguagesController extends Controller
     {
         $urlParas = parse_url($url);
         return ['host' => $urlParas['host'], 'path' => $urlParas['path']];
+    }
+
+    private function resourcesFormatter($resources = [])
+    {
+        // $resources
     }
 }

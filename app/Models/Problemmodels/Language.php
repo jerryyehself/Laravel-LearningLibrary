@@ -53,6 +53,7 @@ class Language extends Model
             'instantiated_id',
             'instance_id'
         )
+            ->withPivot('id', 'instance_type')
             ->withTimestamps();
     }
 

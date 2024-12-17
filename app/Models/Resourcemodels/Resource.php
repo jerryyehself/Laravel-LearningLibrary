@@ -9,6 +9,7 @@ use App\Models\Problemmodels\Environment;
 use App\Models\Problemmodels\Framework;
 use App\Models\Problemmodels\Language;
 use App\Models\Problemmodels\Packagetool;
+use App\Models\ResourceAuthorize;
 use App\Traits\InstancesInit;
 
 class Resource extends Model
@@ -26,9 +27,9 @@ class Resource extends Model
     ];
 
     // from domain
-    public function sourcedomain()
+    public function authorize()
     {
-        return $this->belongsTo(Sourcedomain::class);
+        return $this->belongsTo(ResourceAuthorize::class, 'resource_domain_id');
     }
 
     //is about languages
