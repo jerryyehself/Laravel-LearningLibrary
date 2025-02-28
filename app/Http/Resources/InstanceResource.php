@@ -26,19 +26,25 @@ class InstanceResource extends JsonResource
 
     private function resourcesFormatter($resource)
     {
-        $resource->resources->map(function ($instance) use (&$resource) {
-            // dd($instance->toArray());
-            $resource->{$instance->pivot->instance_type} = [
-                'content_languang' => $instance->resource_content_language,
+        $tempData = [];
+
+        $resource->resources->map(function ($instance) use (&$tempData) {
+            $type = $instance->pivot->instance_type;
+
+            // 初始化數組類型
+            if (!isset($tempData[$type])) {
+                $tempData[$type] = [];
+            }
+            // 追加數據
+            $tempData[$type][] = [
+                'content_language' => $instance->resource_content_language,
                 'url' => $instance->authorize->resource_domain_url . $instance->resource_location
             ];
-            // return [
-            //     'instance_type' => $instance->pivot->instance_type,
-            //     'instance' => $instance->authorize->resource_domain_url . $resource->resource_location
-            // ];
-        })
-            ->groupBy('instance_type')
-            ->toArray();
+        });
+        // 將臨時數據賦值回去
+        foreach ($tempData as $type => $data) {
+            $resource->{$type} = $data;
+        }
 
         return $resource;
     }

@@ -24,15 +24,17 @@ class LanguagePostRequest extends FormRequest
     public function rules()
     {
         return [
-            'official_document' => 'required | active_url'
+            'official_document.*.url' => 'required|url',
+            'official_document.*.resource_type' => 'required',
+            'official_document.*.content_language' => 'required'
         ];
     }
 
     public function messages()
     {
         return [
-            'official_document.required' => 'A official document is required',
-            'official_document.active_url' => 'Should be active URL',
+            'official_document.*.url.required' => 'A official document is required',
+            'official_document.*.url' => 'Should be active URL',
         ];
     }
 }

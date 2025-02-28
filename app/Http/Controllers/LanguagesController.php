@@ -12,6 +12,7 @@ use App\Models\Resourcemodels\Resource;
 use App\Models\ResourcesInfo;
 use App\View\Components\setting\SettingTargetList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 
 class LanguagesController extends Controller
@@ -27,7 +28,8 @@ class LanguagesController extends Controller
                 'edit' => false,
                 'collect' => false
             ],
-            'required' => false
+            'required' => false,
+            'multiple' => true
         ],
         'official_document' => [
             'title' => '官方網站',
@@ -38,7 +40,8 @@ class LanguagesController extends Controller
                 'collect' => false
             ],
             'dropDown' => ['content_language'],
-            'required' => true
+            'required' => true,
+            'multiple' => false
         ],
         'document_list' => [
             'title' => '資源清單',
@@ -49,8 +52,10 @@ class LanguagesController extends Controller
                 'edit' => true,
                 'collect' => false
             ],
-            'dropDown' => ['source_type', 'content_language'],
-            'required' => false
+            'dropDown' => ['resource_type', 'content_language'],
+            'required' => false,
+            'increment' => true,
+            'multiple' => true
         ],
         'logo' => [
             'title' => 'Logo',
@@ -63,9 +68,9 @@ class LanguagesController extends Controller
             ],
             'required' => false
         ],
-        'source_type' => [
+        'resource_type' => [
             'title' => '資源類型',
-            'name' => 'source_type',
+            'name' => 'resource_type',
             'editable' => true,
             'type' => 'dropDown',
             'display' => [
@@ -87,7 +92,7 @@ class LanguagesController extends Controller
         ],
         'content_language' => [
             'title' => '資源類型',
-            'name' => 'source_type',
+            'name' => 'content_language',
             'editable' => true,
             'type' => 'dropDown',
             'display' => [
@@ -173,7 +178,7 @@ class LanguagesController extends Controller
         $settingRoute = SettingTargetList::getSettingList();
 
         $instance = new InstanceResource($this->languages::with('resources')->find($id));
-        // dd(collect($instance)->toArray());
+
         $sections = [];
 
         collect($this->fieldSetting)->where(
@@ -185,19 +190,17 @@ class LanguagesController extends Controller
                     $drowpDown = $this->fieldSetting[$drowpDown];
             }
             switch ($settings['type']) {
-                case 'url':
-                    $sections['attr']['title'] = '屬性';
-                    $sections['attr']['fields'][$field] = $settings;
-                    break;
                 default:
                     $sections[$settings['type']][] = [
                         'title' => $settings['title'],
-                        'fields' => [$field => $settings]
+                        'fields' => [$field => $settings],
+                        'increment' => isset($settings['increment'])
                     ];
 
                     break;
             }
         });
+
         return view('setting.crud.modify', compact('instance', 'sections', 'settingRoute'));
     }
 
@@ -209,45 +212,47 @@ class LanguagesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(LanguagePostRequest $request, $id)
+    // public function update(Request $request, $id)
     {
+
         $modify = $request->validated();
-
+        $language = $this->languages::find($id);
         if ($modify['official_document']) {
+            // $modify['official_document'] = Arr::flatten($modify['official_document']);
+            foreach ($modify['official_document'] as $resId => $res) {
+                $urlParas = $this->explodeURL($res['url']);
 
-            $urlParas = $this->explodeURL($modify['official_document']);
+                $domain = ResourceAuthorize::updateOrCreate(
+                    ['resource_domain_url' => $urlParas['host']]
+                );
 
-            $domain = ResourceAuthorize::updateOrCreate(
-                ['resource_domain_url' => $urlParas['host']]
-            );
+                $resource = Resource::updateOrCreate(
+                    [
+                        'resource_location' => $urlParas['path'],
+                        'resource_domain_id' => $domain->id
+                    ],
+                    [
+                        'resource_content_language' => $res['content_language']
+                    ]
+                );
 
-            $language = $this->languages::find($id);
-
-            $resource = Resource::updateOrCreate(
-                [
-                    'resource_location' => $urlParas['path'],
-                    'resource_domain_id' => $domain->id
-                ],
-                [
-                    'resource_content_language' => 'eng',
-                ]
-            );
-
-            if (!$language->resources()->where('resources.id', $resource->id)->exists()) {
-                $language->resources()
-                    ->syncWithoutDetaching(
-                        [
-                            $resource->id =>
+                if (!$language->resources()->where('resources.id', $resource->id)->exists()) {
+                    $language->resources()
+                        ->syncWithoutDetaching(
                             [
-                                'instantiated_type' => $this->languages::class,
-                                'instance_type' => 'official_document',
-                                'instance_id' => $resource->id
+                                $resource->id =>
+                                [
+                                    'instantiated_type' => $this->languages::class,
+                                    'instance_type' => $res['resource_type'],
+                                    'instance_id' => $resource->id
+                                ]
                             ]
-                        ]
-                    );
+                        );
+                }
             }
         }
 
-        return redirect('setting/languages')
+        return redirect('setting/practiceType_languages')
             ->with('actionmessage', [
                 'main' => '修改成功',
                 'status' => 'success',
@@ -269,7 +274,7 @@ class LanguagesController extends Controller
     private function explodeURL($url = '')
     {
         $urlParas = parse_url($url);
-        return ['host' => $urlParas['host'], 'path' => $urlParas['path']];
+        return ['host' => $urlParas['scheme'] . '://' . $urlParas['host'], 'path' => $urlParas['path']];
     }
 
     private function resourcesFormatter($resources = [])

@@ -18,6 +18,7 @@ class Resource extends Model
 
     protected $fillable = [
         'resource_title',
+        'resource_domain_id',
         'resource_note',
         'resource_location',
         'resource_content_language',

@@ -4,12 +4,15 @@
             'name' => 'submit',
             'label' => '確認修改',
             'color' => 'primary',
-            // 'type' => 'submit',
+            'type' => 'submit',
+            // 'value' => 'submit',
         ],
         [
             'name' => 'cancel',
             'label' => '取消修改',
             'color' => 'secondary',
+            // 'type' => 'cancel',
+            // 'value' => 'cancel',
         ],
     ];
 @endphp
@@ -142,23 +145,6 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- <div class="col-3 justify-content-start img-input-container ps-0">
-                                <div>上傳(已選
-                                    <span class="img-counter">
-                                        {{ $instance->hasImg->count() }}
-                                    </span>
-                                    張，最多
-                                    <span class="img-counter-limit">5</span>
-                                    張)
-                                </div>
-                                <div class="input-group input-group-sm img-input mb-1">
-                                    <span class="input-group-text" id="image">
-                                        <button type="button" class="btn-close" aria-label="Close"></button>
-                                    </span>
-                                    <input name="hasImg[]" type="file" class="form-control form-control-sm"
-                                        aria-label="image" aria-describedby="image" data-has-file="false">
-                                </div>
-                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -190,6 +176,7 @@
                         <h5>
                             {{ $sections['attr']['title'] }}
                         </h5>
+
                         @isset($sections['attr']['fields'])
                             <div class="row g-0 gap-3 align-items-center py-2">
                                 @foreach ($sections['attr']['fields'] as $field => $fieldSetting)
@@ -200,6 +187,7 @@
                                         <label for="{{ $field }}" class="form-label text-muted">
                                             {{ $fieldSetting['title'] }}
                                         </label>
+
                                         @error($field)
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -223,40 +211,9 @@
             </div>
             @endif
             @isset($sections['inputGroup'])
-                @foreach ($sections['inputGroup'] as $key => $inputGroup)
-                    <div class="row w-100">
-                        <h5 class="">
-                            {{ $inputGroup['title'] }}
-                        </h5>
-
-                        @foreach ($inputGroup['fields'] as $field => $group)
-                            <div class="col">
-                                <div class="">
-                                    <div class="col">
-                                        <div class="input-group mb-3">
-                                            @isset($group['dropDown'])
-                                                @foreach ($group['dropDown'] as $drowpDown)
-                                                    <select name="{{ $field . '_' . $drowpDown['name'] }}[]"
-                                                        id="{{ $field }}"
-                                                        class="btn btn-outline-secondary dropdown-toggle">
-                                                        @foreach ($drowpDown['list'] as $value => $type)
-                                                            <option value="{{ $value }}"
-                                                                @if ($instance[$field])  @endif>
-                                                                {{ $type['label'] }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                @endforeach
-                                            @endisset
-                                            <input type="text" name="{{ $field }}[]" class="form-control"
-                                                placeholder="" aria-label="" aria-describedby="basic-addon1"
-                                                value="@if ($instance[$field]) {{ $instance[$field]['url'] }} @endif">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
+                @foreach ($sections['inputGroup'] as $inputGroup)
+                    <x-language-resource-input-group :inputGroup="$inputGroup" :instance="$instance">
+                    </x-language-resource-input-group>
                 @endforeach
             @endisset
             @isset($sections['hidden'])
