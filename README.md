@@ -3,10 +3,10 @@
 ![](https://github.com/jerryyehself/Laravel-LearningLibrary/blob/master/pictures/workCard.png)
 ## 檢索
 ![檢索](https://github.com/jerryyehself/Laravel-LearningLibrary/blob/master/pictures/retrieval.png)
-> 透過github tags檢索作品
+> 透過github topics檢索作品
 ## 視覺化
 ![視覺化](https://github.com/jerryyehself/Laravel-LearningLibrary/blob/master/pictures/visualization.png)
-> 透過tags呈現練習內容的比例喊數量
+> 透過topics和自訂tag呈現練習內容的比例喊數量
 > chart.js
 ## 紀錄知識節點
 > 紀錄學習時用到的資源(待補)
