@@ -39,11 +39,14 @@ class updateReposInfo extends Command
      */
     public function handle()
     {
+        $trueSuccess = false;
         $saveGitService = new SaveReposDataService;
-        // $saveGitService->saveReposData();
+        $trueSuccess = $saveGitService->saveReposData();
+
+        $logInfo = ($trueSuccess) ? 'Git Repos info updated' : 'update repos data success(function shut down)';
 
         Log::info('update repos data success');
-        $this->info('Git Repos info updated'); // 使用 info() 顯示終端機訊息
+        $this->info($logInfo); // 使用 info() 顯示終端機訊息
         return 0;
     }
 }
