@@ -89,7 +89,7 @@ class Project extends Model
     // has resources
     public function resources()
     {
-        return $this->morphToMany(Resource::class, 'resourceusage');
+        return $this->morphToMany(Resource::class, 'instantiated', 'instantiations', 'instance_id', 'instantiated_id');
     }
 
     // has project elements
