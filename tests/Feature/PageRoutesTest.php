@@ -13,7 +13,7 @@ class PageRoutesTest extends TestCase
     /**
      * @array [uri,statusCode]
      */
-    private $whiteList = [
+    private const WHITE_LIST = [
         '/sanctum/csrf-cookie' => 204,
         '/graphql/repos' => 500,
         '/api/user' => 500,
@@ -36,7 +36,7 @@ class PageRoutesTest extends TestCase
      */
     public function testPagesAreAccessible(): void
     {
-        $whiteList = collect($this->whiteList);
+        $whiteList = collect(self::WHITE_LIST);
 
         $failures = collect(Route::getRoutes())
             ->filter(
@@ -46,13 +46,21 @@ class PageRoutesTest extends TestCase
                     !str_contains($route->uri(), '{')
             )
             ->map(fn($route) => '/' . ltrim($route->uri(), '/'))
-            ->reject(function ($uri) use ($whiteList) {
+            ->mapWithKeys(function ($uri) use ($whiteList) {
                 $response = $this->json('GET', $uri);
-                return (($whiteList->has($uri) &&
-                    (!$whiteList->get($uri) || $response->getStatusCode() === $whiteList->get($uri))) ||
-                    (!$whiteList->has($uri) && $response->getStatusCode() === 200));
-            })
-            ->map(fn($uri) => $this->recordFailure($uri, $this->json('GET', $uri)->getStatusCode()));
+                $actual = $response->getStatusCode();
+
+                if ($whiteList->has($uri)) {
+                    $expected = $whiteList->get($uri);
+                    if ($actual !== $expected) {
+                        return [$uri => $this->recordFailure($uri, $actual, $expected)];
+                    }
+                } elseif ($actual !== 200) {
+                    return [$uri => $this->recordFailure($uri, $actual, 200)];
+                }
+
+                return [];
+            });
 
         if ($failures->isNotEmpty()) {
             $this->fail("以下 route 回傳錯誤狀態：\n" . $failures->implode("\n"));
@@ -61,8 +69,8 @@ class PageRoutesTest extends TestCase
         $this->assertTrue(true);
     }
 
-    private function recordFailure(string $uri, int $status): string
+    private function recordFailure(string $uri, int $actual, int $expected): string
     {
-        return "❌ [$uri] returned status $status, it must be {$this->whiteList[$uri]}";
+        return "❌ [$uri] returned status $actual, expected $expected";
     }
 }
