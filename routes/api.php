@@ -149,7 +149,7 @@ Route::get('graphQLtest', function () {
         //     }
         // ',
     ]);
-    dd($response->json());
+    // dd($response->json());
     return response()->json($response);
     $test = new SaveReposDataService;
     return $test->saveReposData();
